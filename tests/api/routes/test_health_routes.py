@@ -1,8 +1,7 @@
-import pytest
 from fastapi.testclient import TestClient
 from src.api.main import app
 
-client = TestClient(transport=app)
+client = TestClient(app=app)
 
 def test_health_check():
     """Test health check endpoint"""
