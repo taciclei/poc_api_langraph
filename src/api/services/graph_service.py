@@ -22,3 +22,10 @@ class GraphService(BaseDBService):
     def list_graphs(cls, status: Optional[str] = None, skip: int = 0, limit: int = 10) -> List[Dict]:
         filter_dict = {"status": status} if status else None
         return cls.list(filter_dict, skip, limit)
+
+    @classmethod
+    def validate_graph(cls, graph_id: str) -> Dict:
+        from .validation_service import ValidationService
+        graph = cls.get_graph(graph_id)
+        validation_result = ValidationService.validate_graph_structure(graph_id)
+        return {**graph, "validation": validation_result}
