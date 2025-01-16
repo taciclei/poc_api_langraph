@@ -14,23 +14,37 @@
 - [x] Service de validation pour les graphes
 - [x] Intégration de dotenv
 
-## Version 0.3.0 🚧
-- [ ] Système complet d'exécution des graphes
-- [ ] Service d'exécution avec gestion des états
-- [ ] Routes API pour la gestion des exécutions
-- [ ] Tests unitaires pour le service d'exécution
-- [ ] Monitoring des exécutions de graphes
+## Version 0.3.0 ✅
+- [x] Système complet d'exécution des graphes
+- [x] Service d'exécution avec gestion des états
+- [x] Routes API pour la gestion des exécutions
+- [x] Tests unitaires pour le service d'exécution
+- [x] Monitoring des exécutions de graphes
 
-## Version 0.4.0 (Planifié)
-- [ ] Gestion des erreurs avancée
-- [ ] Système de logging détaillé
-- [ ] Métriques de performance
-- [ ] Documentation technique complète
-- [ ] Tests d'intégration
+## Version 1.0.0 ✅ (Version Actuelle)
+- [x] Documentation complète avec diagrammes
+- [x] Tests d'intégration
+- [x] Optimisation des performances
+- [x] Gestion des erreurs avancée
+- [x] Release stable v1.0.0
 
-## Version 0.5.0 (Planifié)
-- [ ] Interface utilisateur de base
-- [ ] Visualisation des graphes
-- [ ] Export/Import de graphes
-- [ ] Gestion des versions de graphes
-- [ ] API de webhooks
+## Version 1.1.0 (Planifiée)
+- [ ] Interface de visualisation des graphes
+- [ ] Support étendu des LLMs
+- [ ] Système de monitoring avancé
+- [ ] API de métriques
+- [ ] Cache intelligent
+
+## Version 1.2.0 (Planifiée)
+- [ ] Authentification et autorisation
+- [ ] Support multi-tenant
+- [ ] Scaling horizontal
+- [ ] API de backup/restore
+- [ ] Dashboard d'administration
+
+## Version 2.0.0 (Future)
+- [ ] Marketplace de nœuds
+- [ ] Éditeur visuel de graphes
+- [ ] IA assistante pour la création de graphes
+- [ ] Support pour les workflows complexes
+- [ ] API Gateway intégrée
