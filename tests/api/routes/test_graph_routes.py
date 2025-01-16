@@ -1,11 +1,11 @@
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from src.api.main import app
 
 @pytest.fixture
 def client():
-    with TestClient(app) as c:
-        yield c
+    return TestClient(app)
 
 @pytest.fixture
 def sample_graph_request():
