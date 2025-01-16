@@ -1,9 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 from src.api.main import app
-from src.api.middleware.error_handler import APIError
 
-client = TestClient(app)
+client = TestClient(transport=app)
 
 @pytest.fixture
 def sample_graph_request():
@@ -42,7 +41,7 @@ def test_get_nonexistent_graph():
     """Test getting a non-existent graph"""
     response = client.get("/graph/get/nonexistent")
     assert response.status_code == 404
-    assert "Graph not found" in response.json()["error"]["message"]
+    assert "Graph not found" in response.json()["message"]
 
 def test_delete_graph():
     """Test graph deletion"""
