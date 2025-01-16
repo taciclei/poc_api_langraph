@@ -1,5 +1,5 @@
 from typing import Optional, Dict, List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from ..services.llm_service import LLMService
 from ..llm.interface.base_llm import LLMResponse
@@ -14,11 +14,14 @@ class GenerateRequest(BaseModel):
     use_cache: bool = True
 
 @router.get("/providers", response_model=List[str])
-def get_available_providers(llm_service: LLMService):
+async def get_available_providers(llm_service: LLMService = Depends()):
     return llm_service.get_available_providers()
 
 @router.post("/generate", response_model=LLMResponse)
-async def generate_text(request: GenerateRequest, llm_service: LLMService):
+async def generate_text(
+    request: GenerateRequest,
+    llm_service: LLMService = Depends()
+):
     try:
         return await llm_service.generate(
             prompt=request.prompt,
@@ -31,7 +34,10 @@ async def generate_text(request: GenerateRequest, llm_service: LLMService):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/stream")
-async def stream_text(request: GenerateRequest, llm_service: LLMService):
+async def stream_text(
+    request: GenerateRequest,
+    llm_service: LLMService = Depends()
+):
     try:
         return await llm_service.stream(
             prompt=request.prompt,
