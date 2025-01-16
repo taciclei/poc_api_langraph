@@ -1,109 +1,170 @@
-# 🚀 POC API LangGraph
+# LangGraph API
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/python-3.12-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
+Une API FastAPI pour créer et exécuter des graphes de traitement de langage naturel avec LangGraph et LangChain.
 
-Une API RESTful moderne pour la gestion et l'exécution de graphes LangChain, construite avec FastAPI et TinyDB.
+## 🚀 Fonctionnalités
 
-## ✨ Fonctionnalités
+- Création et gestion de graphes de traitement
+- Exécution asynchrone des workflows
+- Multiples types de nœuds spécialisés
+- Suivi des exécutions
+- API RESTful complète
 
-- 🌐 API RESTful complète
-- 📊 Gestion des graphes LangChain
-- 🔄 Exécution de workflows
-- 📝 Documentation OpenAPI/Swagger
-- 🔒 Gestion des erreurs robuste
-- 🚀 Performance optimisée
+## 📋 Types de Nœuds Disponibles
 
-## 🛠️ Installation
+### 1. LLMNode
+Nœud pour les opérations de modèle de langage
+\`\`\`python
+{
+    "type": "llm",
+    "config": {
+        "prompt_template": "Résume le texte suivant: {input}",
+        "memory": true  # Optional
+    }
+}
+\`\`\`
 
-### Prérequis
+### 2. ProcessingNode
+Nœud pour le traitement personnalisé des données
+\`\`\`python
+{
+    "type": "processing",
+    "config": {
+        "function": "custom_process"
+    }
+}
+\`\`\`
 
-- Python 3.12+
-- Magic CLI
+### 3. ValidationNode
+Nœud pour la validation des données
+\`\`\`python
+{
+    "type": "validation",
+    "config": {
+        "schema": {
+            "text": str,
+            "count": int
+        }
+    }
+}
+\`\`\`
 
-### Installation rapide
+### 4. TransformationNode
+Nœud pour la transformation des données
+\`\`\`python
+{
+    "type": "transformation",
+    "config": {
+        "transformations": {
+            "text": "to_upper",
+            "data": "to_json"
+        }
+    }
+}
+\`\`\`
 
-```bash
-# Cloner le dépôt
-git clone https://github.com/taciclei/poc_api_langraph.git
-cd poc_api_langraph
+### 5. AggregationNode
+Nœud pour combiner plusieurs entrées
+\`\`\`python
+{
+    "type": "aggregation",
+    "config": {
+        "custom_aggregation": false  # Optional
+    }
+}
+\`\`\`
+
+### 6. FilterNode
+Nœud pour filtrer les données
+\`\`\`python
+{
+    "type": "filter",
+    "config": {
+        "conditions": {
+            "score": "lambda x: x > 0.5"
+        }
+    }
+}
+\`\`\`
+
+## 🔧 Installation
+
+\`\`\`bash
+# Cloner le repository
+git clone https://github.com/votre-username/langgraph-api.git
 
 # Installer les dépendances
-magic install
-```
+pip install -r requirements.txt
 
-### Variables d'environnement
-
-Copiez le fichier \`.env.example\` vers \`.env\` et ajustez les variables :
-
-```bash
+# Configurer les variables d'environnement
 cp .env.example .env
-```
+# Éditer .env avec vos clés API
+\`\`\`
 
-## 🚀 Démarrage
+## 🚦 Utilisation
 
-```bash
-magic run start
-```
+### Démarrer l'API
+\`\`\`bash
+uvicorn src.api.main:app --reload
+\`\`\`
 
-L'API sera disponible à :
-- API : http://localhost:8000
-- Documentation : http://localhost:8000/docs
-- Documentation alternative : http://localhost:8000/redoc
+### Créer un Graphe
+\`\`\`bash
+curl -X POST http://localhost:8000/graph/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Summarization Workflow",
+    "description": "Summarize and process text",
+    "nodes": [
+      {
+        "id": "summarize",
+        "type": "llm",
+        "config": {
+          "prompt_template": "Summarize: {input}"
+        }
+      },
+      {
+        "id": "validate",
+        "type": "validation",
+        "config": {
+          "schema": {
+            "text": "str"
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "summarize",
+        "target": "validate"
+      }
+    ]
+  }'
+\`\`\`
 
-## 📖 Documentation
+### Exécuter un Graphe
+\`\`\`bash
+curl -X POST http://localhost:8000/execution/start \
+  -H "Content-Type: application/json" \
+  -d '{
+    "graph_id": "votre-graph-id",
+    "input_data": {
+      "input": "Votre texte à traiter"
+    }
+  }'
+\`\`\`
 
-La documentation complète est disponible dans le dossier [docs](./docs).
+## 📚 Documentation API
 
-### Points d'entrée principaux
-
-- \`POST /api/v1/graphs\` - Créer un nouveau graphe
-- \`GET /api/v1/graphs\` - Lister les graphes
-- \`POST /api/v1/graphs/{graph_id}/execute\` - Exécuter un graphe
-
-## 🏗️ Structure du projet
-
-```
-src/
-  ├── api/            # Composants API
-  │   ├── models/     # Modèles Pydantic
-  │   ├── routes/     # Routes FastAPI
-  │   └── services/   # Services métier
-  ├── core/           # Configuration et utilitaires
-  └── main.py         # Point d'entrée
-```
+La documentation Swagger est disponible à l'adresse : \`http://localhost:8000/docs\`
 
 ## 🧪 Tests
 
-```bash
+\`\`\`bash
 # Exécuter les tests
-magic test
-
-# Avec couverture
-magic test --cov
-```
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! Consultez notre [guide de contribution](CONTRIBUTING.md).
+pytest tests/ -v
+\`\`\`
 
 ## 📝 License
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 📫 Contact
-
-- Créé par [Taciclei](https://github.com/taciclei)
-- Twitter : [@taciclei](https://twitter.com/taciclei)
-
-## 🙏 Remerciements
-
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [LangChain](https://python.langchain.com/)
-- [TinyDB](https://tinydb.readthedocs.io/)
-
----
-
-⭐️ Si ce projet vous aide, n'hésitez pas à lui donner une étoile sur GitHub !
+MIT License
