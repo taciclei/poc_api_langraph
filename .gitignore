@@ -7,3 +7,4 @@ venv/
 .magic/
 data/
 .DS_Store
+db.json

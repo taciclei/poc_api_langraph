@@ -1,14 +1,21 @@
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import List, Dict, Optional
 
-class GraphBase(BaseModel):
+class Graph(BaseModel):
+    id: str
     name: str
     description: Optional[str] = None
-    status: Optional[str] = "draft"
-    metadata: Optional[Dict] = None
+    nodes: List[str]
+    edges: List[Dict[str, str]]
 
-class GraphCreate(GraphBase):
-    pass
+class GraphCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    nodes: List[str]
+    edges: List[Dict[str, str]]
 
-class GraphUpdate(GraphBase):
+class GraphUpdate(BaseModel):
     name: Optional[str] = None
+    description: Optional[str] = None
+    nodes: Optional[List[str]] = None
+    edges: Optional[List[Dict[str, str]]] = None

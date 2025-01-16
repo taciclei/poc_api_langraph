@@ -1,11 +1,7 @@
-from src.api.routes import execution_routes
-app.include_router(execution_routes.router)
-from src.api.routes import execution_routes
-app.include_router(execution_routes.router)
+from fastapi import FastAPI
+from src.api.routes import health_routes, graph_routes
 
-# Add error handling
-from src.api.middleware.error_handler import APIError, error_handler
-from src.api.middleware.logging_middleware import LoggingMiddleware
+app = FastAPI(title="Graph API")
 
-app.add_middleware(LoggingMiddleware)
-app.add_exception_handler(APIError, error_handler)
+app.include_router(health_routes.router, prefix="/health", tags=["health"])
+app.include_router(graph_routes.router, prefix="/graph", tags=["graph"])
