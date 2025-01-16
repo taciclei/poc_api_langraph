@@ -21,7 +21,7 @@ Une API FastAPI pour créer et exécuter des graphes de traitement de langage na
 
 ## 🏗 Architecture
 
-\`\`\`mermaid
+```mermaid
 graph TB
     A[Client] -->|HTTP Request| B[FastAPI]
     B --> C[Router Layer]
@@ -35,7 +35,7 @@ graph TB
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#bbf,stroke:#333,stroke-width:2px
     style E fill:#bfb,stroke:#333,stroke-width:2px
-\`\`\`
+```
 
 ## 🚀 Fonctionnalités
 
@@ -49,7 +49,7 @@ graph TB
 
 ### Architecture des Nœuds
 
-\`\`\`mermaid
+```mermaid
 classDiagram
     BaseNode <|-- LLMNode
     BaseNode <|-- ProcessingNode
@@ -72,11 +72,11 @@ classDiagram
     class ValidationNode{
         +schema
     }
-\`\`\`
+```
 
 ### 1. LLMNode
 Nœud pour les opérations de modèle de langage
-\`\`\`python
+```python
 {
     "type": "llm",
     "config": {
@@ -84,22 +84,22 @@ Nœud pour les opérations de modèle de langage
         "memory": true  # Optional
     }
 }
-\`\`\`
+```
 
 ### 2. ProcessingNode
 Nœud pour le traitement personnalisé des données
-\`\`\`python
+```python
 {
     "type": "processing",
     "config": {
         "function": "custom_process"
     }
 }
-\`\`\`
+```
 
 ### 3. ValidationNode
 Nœud pour la validation des données
-\`\`\`python
+```python
 {
     "type": "validation",
     "config": {
@@ -109,7 +109,7 @@ Nœud pour la validation des données
         }
     }
 }
-\`\`\`
+```
 
 ## 🔧 Installation
 
@@ -119,7 +119,7 @@ Nœud pour la validation des données
 - pip
 - git
 
-\`\`\`bash
+```bash
 # Cloner le repository
 git clone https://github.com/votre-username/langgraph-api.git
 cd langgraph-api
@@ -136,13 +136,13 @@ pip install -r requirements.txt
 # Configurer les variables d'environnement
 cp .env.example .env
 # Éditer .env avec vos clés API
-\`\`\`
+```
 
 ## 🚦 Utilisation
 
 ### Flux de Travail Typique
 
-\`\`\`mermaid
+```mermaid
 sequenceDiagram
     participant C as Client
     participant A as API
@@ -162,12 +162,12 @@ sequenceDiagram
     G->>DB: Sauvegarder résultats
     G-->>A: Status
     A-->>C: execution_id
-\`\`\`
+```
 
 ### Exemples d'Utilisation
 
 #### 1. Créer un Graphe de Résumé
-\`\`\`bash
+```bash
 curl -X POST http://localhost:8000/graph/create \
   -H "Content-Type: application/json" \
   -d '{
@@ -198,10 +198,10 @@ curl -X POST http://localhost:8000/graph/create \
       }
     ]
   }'
-\`\`\`
+```
 
 #### 2. Exécuter le Graphe
-\`\`\`bash
+```bash
 curl -X POST http://localhost:8000/execution/start \
   -H "Content-Type: application/json" \
   -d '{
@@ -210,7 +210,7 @@ curl -X POST http://localhost:8000/execution/start \
       "input": "Votre texte à traiter"
     }
   }'
-\`\`\`
+```
 
 ## 📚 Documentation API
 
@@ -218,7 +218,7 @@ La documentation Swagger est disponible à l'adresse : \`http://localhost:8000/d
 
 ### Structure du Projet
 
-\`\`\`
+```
 src/
 ├── api/
 │   ├── models/          # Modèles Pydantic
@@ -228,11 +228,11 @@ src/
 │   └── main.py         # Point d'entrée
 ├── tests/              # Tests unitaires et d'intégration
 └── docs/              # Documentation détaillée
-\`\`\`
+```
 
 ## 🧪 Tests
 
-\`\`\`bash
+```bash
 # Exécuter tous les tests
 pytest tests/ -v
 
@@ -241,7 +241,7 @@ pytest tests/ -v --cov=src
 
 # Exécuter un test spécifique
 pytest tests/api/services/test_execution_service.py -v
-\`\`\`
+```
 
 ## 📝 License
 
