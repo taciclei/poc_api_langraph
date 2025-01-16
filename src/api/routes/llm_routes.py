@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from ..services.llm_service import LLMService
@@ -12,6 +12,10 @@ class GenerateRequest(BaseModel):
     max_tokens: Optional[int] = None
     temperature: float = 0.7
     use_cache: bool = True
+
+@router.get("/providers", response_model=List[str])
+def get_available_providers(llm_service: LLMService):
+    return llm_service.get_available_providers()
 
 @router.post("/generate", response_model=LLMResponse)
 async def generate_text(request: GenerateRequest, llm_service: LLMService):
