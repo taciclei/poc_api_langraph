@@ -1,15 +1,8 @@
-from fastapi import APIRouter, status
-from ..middleware.error_handler import APIError
+from fastapi import APIRouter
 
-router = APIRouter(tags=["health"])
+router = APIRouter()
 
-@router.get("/health")
+@router.get("")
 async def health_check():
-    try:
-        return {"status": "healthy"}
-    except Exception as e:
-        raise APIError(
-            message="Health check failed",
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            details={"error": str(e)}
-        )
+    """Health check endpoint"""
+    return {"status": "healthy"}

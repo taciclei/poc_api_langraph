@@ -50,7 +50,7 @@ def test_get_nonexistent_graph(test_client):
     """Test getting a non-existent graph"""
     response = test_client.get("/graph/get/nonexistent")
     assert response.status_code == 404
-    assert "Graph not found" in response.json()["message"]
+    assert "Graph not found" in response.json()["detail"]["message"]
 
 def test_delete_graph(test_client):
     """Test graph deletion"""
