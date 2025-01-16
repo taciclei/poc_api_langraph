@@ -14,16 +14,23 @@
 - [x] Service de validation pour les graphes
 - [x] Intégration de dotenv
 
-## Version 0.3.0 ✅
-- [x] Système complet d'exécution des graphes
-- [x] Service d'exécution avec gestion des états
-- [x] Routes API pour la gestion des exécutions
-- [x] Tests unitaires pour le service d'exécution
-- [x] Monitoring des exécutions de graphes
+## Version 0.3.0 🚧
+- [ ] Système complet d'exécution des graphes
+- [ ] Service d'exécution avec gestion des états
+- [ ] Routes API pour la gestion des exécutions
+- [ ] Tests unitaires pour le service d'exécution
+- [ ] Monitoring des exécutions de graphes
 
-## Version 0.4.0 🚧
+## Version 0.4.0 (Planifié)
 - [ ] Gestion des erreurs avancée
 - [ ] Système de logging détaillé
 - [ ] Métriques de performance
 - [ ] Documentation technique complète
 - [ ] Tests d'intégration
+
+## Version 0.5.0 (Planifié)
+- [ ] Interface utilisateur de base
+- [ ] Visualisation des graphes
+- [ ] Export/Import de graphes
+- [ ] Gestion des versions de graphes
+- [ ] API de webhooks
