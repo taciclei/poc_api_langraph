@@ -4,13 +4,15 @@ from typing import Optional, Dict, Any
 class EdgeBase(BaseModel):
     source_id: str
     target_id: str
-    condition: Optional[Dict[str, Any]] = None
-    metadata: Optional[Dict] = None
+    graph_id: str
+    type: str = "default"
+    metadata: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None
 
 class EdgeCreate(EdgeBase):
     pass
 
 class EdgeUpdate(EdgeBase):
-    source_id: Optional[str] = None
-    target_id: Optional[str] = None
-    condition: Optional[Dict[str, Any]] = None
+    type: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None

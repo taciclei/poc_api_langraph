@@ -1,54 +1,30 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 import uuid
 from fastapi import HTTPException
 from .base_db_service import BaseDBService
+from .node_service import NodeService
 
 class EdgeService(BaseDBService):
     table_name = "edges"
 
     @classmethod
-    def add_edge(cls, graph_id: str, edge_data: Dict) -> Dict:
+    def validate_nodes(cls, graph_id: str, source_id: str, target_id: str):
+        source = NodeService.get_node(source_id)
+        target = NodeService.get_node(target_id)
+        
+        if source["graph_id"] != graph_id or target["graph_id"] != graph_id:
+            raise HTTPException(
+                status_code=400,
+                detail="Source and target nodes must belong to the same graph"
+            )
+
+    @classmethod
+    def create_edge(cls, graph_id: str, edge_data: Dict) -> Dict:
+        cls.validate_nodes(graph_id, edge_data["source_id"], edge_data["target_id"])
         edge_data["_id"] = str(uuid.uuid4())
         edge_data["graph_id"] = graph_id
         return cls.create(edge_data)
 
     @classmethod
-    def list_edges(cls, graph_id: str, skip: int = 0, limit: int = 10) -> List[Dict]:
-        return cls.list({"graph_id": graph_id}, skip, limit)
-
-    @classmethod
-    def get_edge(cls, edge_id: str) -> Dict:
-        edge = cls.get_by_id(edge_id)
-        if not edge:
-            raise HTTPException(status_code=404, detail={
-                "errors": [{
-                    "status": "404",
-                    "title": "Not Found",
-                    "detail": "Edge not found"
-                }]
-            })
-        return edge
-
-    @classmethod
-    def update_edge(cls, edge_id: str, edge_data: Dict) -> Dict:
-        edge = cls.update(edge_id, edge_data)
-        if not edge:
-            raise HTTPException(status_code=404, detail={
-                "errors": [{
-                    "status": "404",
-                    "title": "Not Found",
-                    "detail": "Edge not found"
-                }]
-            })
-        return edge
-
-    @classmethod
-    def delete_edge(cls, edge_id: str) -> None:
-        if not cls.delete(edge_id):
-            raise HTTPException(status_code=404, detail={
-                "errors": [{
-                    "status": "404",
-                    "title": "Not Found",
-                    "detail": "Edge not found"
-                }]
-            })
+    def list_edges(cls, graph_id: str) -> List[Dict]:
+        return cls.list({"graph_id": graph_id})
