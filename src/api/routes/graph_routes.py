@@ -1,22 +1,51 @@
-from fastapi import APIRouter, Query
-from typing import List, Optional
-from ..models.graph import GraphCreate, GraphUpdate
-from ..services.graph_service import GraphService
+from fastapi import APIRouter, HTTPException
+from typing import Dict, List
+from pydantic import BaseModel
+from src.api.services.graph_service import GraphService
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
+graph_service = GraphService()
 
-@router.post("/graphs", response_model=dict)
+class Edge(BaseModel):
+    source: str
+    target: str
+
+class GraphCreate(BaseModel):
+    name: str
+    description: str
+    nodes: List[str]
+    edges: List[Edge]
+
+@router.post("/create")
 def create_graph(graph: GraphCreate):
-    return GraphService.create_graph(graph.dict())
+    """Create a new graph"""
+    try:
+        result = graph_service.create_graph(
+            name=graph.name,
+            description=graph.description,
+            nodes=graph.nodes,
+            edges=[edge.dict() for edge in graph.edges]
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"message": str(e)})
 
-@router.get("/graphs/{graph_id}", response_model=dict)
+@router.get("/get/{graph_id}")
 def get_graph(graph_id: str):
-    return GraphService.get_graph(graph_id)
+    """Get a graph by ID"""
+    graph = graph_service.get_graph(graph_id)
+    if not graph:
+        raise HTTPException(status_code=404, detail={"message": "Graph not found"})
+    return graph
 
-@router.get("/graphs", response_model=List[dict])
-def list_graphs(
-    status: Optional[str] = None,
-    skip: int = Query(default=0, ge=0),
-    limit: int = Query(default=10, ge=1)
-):
-    return GraphService.list_graphs(status, skip, limit)
+@router.delete("/delete/{graph_id}")
+def delete_graph(graph_id: str):
+    """Delete a graph"""
+    if not graph_service.delete_graph(graph_id):
+        raise HTTPException(status_code=404, detail={"message": "Graph not found"})
+    return {"message": "Graph deleted successfully"}
+
+@router.get("/list")
+def list_graphs():
+    """List all graphs"""
+    return graph_service.list_graphs()

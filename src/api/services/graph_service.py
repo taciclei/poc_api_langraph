@@ -1,31 +1,36 @@
 from typing import Dict, List, Optional
+from tinydb import TinyDB, Query
 import uuid
-from fastapi import HTTPException
-from .base_db_service import BaseDBService
 
-class GraphService(BaseDBService):
-    table_name = "graphs"
+class GraphService:
+    def __init__(self):
+        self.db = TinyDB('db.json')
+        self.graphs = self.db.table('graphs')
 
-    @classmethod
-    def create_graph(cls, graph_data: Dict) -> Dict:
-        graph_data["_id"] = str(uuid.uuid4())
-        return cls.create(graph_data)
-
-    @classmethod
-    def get_graph(cls, graph_id: str) -> Dict:
-        graph = cls.get_by_id(graph_id)
-        if not graph:
-            raise HTTPException(status_code=404, detail="Graph not found")
+    def create_graph(self, name: str, description: str, nodes: List[str], edges: List[Dict]) -> Dict:
+        """Create a new graph"""
+        graph_id = str(uuid.uuid4())
+        graph = {
+            "id": graph_id,
+            "name": name,
+            "description": description,
+            "nodes": nodes,
+            "edges": edges
+        }
+        self.graphs.insert(graph)
         return graph
 
-    @classmethod
-    def list_graphs(cls, status: Optional[str] = None, skip: int = 0, limit: int = 10) -> List[Dict]:
-        filter_dict = {"status": status} if status else None
-        return cls.list(filter_dict, skip, limit)
+    def get_graph(self, graph_id: str) -> Optional[Dict]:
+        """Get a graph by ID"""
+        Graph = Query()
+        result = self.graphs.search(Graph.id == graph_id)
+        return result[0] if result else None
 
-    @classmethod
-    def validate_graph(cls, graph_id: str) -> Dict:
-        from .validation_service import ValidationService
-        graph = cls.get_graph(graph_id)
-        validation_result = ValidationService.validate_graph_structure(graph_id)
-        return {**graph, "validation": validation_result}
+    def delete_graph(self, graph_id: str) -> bool:
+        """Delete a graph by ID"""
+        Graph = Query()
+        return bool(self.graphs.remove(Graph.id == graph_id))
+
+    def list_graphs(self) -> List[Dict]:
+        """List all graphs"""
+        return self.graphs.all()

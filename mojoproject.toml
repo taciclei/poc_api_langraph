@@ -11,12 +11,15 @@ start = "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
 
 [dependencies]
 max = ">=24.6.0,<25"
-fastapi = "0.104.0"
 uvicorn = "*"
 python-dotenv = "*"
 langgraph = "*"
 pydantic = ">=2.4.0"
 langchain = "*"
-tinydb = "*"
+tinydb = ">=4.8.2,<5"
+pytest-cov = ">=6.0.0,<7"
+fastapi = "==0.100.0"
+httpx = "==0.24.1"
+pytest-asyncio = "==0.21.1"
 
 [pypi-dependencies]

@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("/")
-async def root():
-    return {"message": "Bienvenue sur le serveur LangGraph API"}
+@router.get("")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy"}
