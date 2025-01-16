@@ -2,10 +2,19 @@ import pytest
 from fastapi.testclient import TestClient
 from src.api.main import app
 
-client = TestClient(app)
+@pytest.fixture(scope="module")
+def test_app():
+    from fastapi import FastAPI
+    return app
 
-def test_health_check():
+@pytest.fixture(scope="module")
+def test_client(test_app):
+    from fastapi.testclient import TestClient
+    with TestClient(test_app) as client:
+        yield client
+
+def test_health_check(test_client):
     """Test health check endpoint"""
-    response = client.get("/health")
+    response = test_client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
