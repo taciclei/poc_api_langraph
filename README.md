@@ -25,28 +25,28 @@ Une API RESTful moderne pour la gestion et l'exécution de graphes LangChain, co
 
 ### Installation rapide
 
-\`\`\`bash
+```bash
 # Cloner le dépôt
 git clone https://github.com/taciclei/poc_api_langraph.git
 cd poc_api_langraph
 
 # Installer les dépendances
 magic install
-\`\`\`
+```
 
 ### Variables d'environnement
 
 Copiez le fichier \`.env.example\` vers \`.env\` et ajustez les variables :
 
-\`\`\`bash
+```bash
 cp .env.example .env
-\`\`\`
+```
 
 ## 🚀 Démarrage
 
-\`\`\`bash
+```bash
 magic run start
-\`\`\`
+```
 
 L'API sera disponible à :
 - API : http://localhost:8000
@@ -65,7 +65,7 @@ La documentation complète est disponible dans le dossier [docs](./docs).
 
 ## 🏗️ Structure du projet
 
-\`\`\`
+```
 src/
   ├── api/            # Composants API
   │   ├── models/     # Modèles Pydantic
@@ -73,17 +73,17 @@ src/
   │   └── services/   # Services métier
   ├── core/           # Configuration et utilitaires
   └── main.py         # Point d'entrée
-\`\`\`
+```
 
 ## 🧪 Tests
 
-\`\`\`bash
+```bash
 # Exécuter les tests
 magic test
 
 # Avec couverture
 magic test --cov
-\`\`\`
+```
 
 ## 🤝 Contribution
 
