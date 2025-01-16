@@ -1,10 +1,17 @@
-import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
+from functools import lru_cache
 
-load_dotenv()  # Charger les variables d'environnement depuis .env
+class Settings(BaseSettings):
+    APP_NAME: str = "POC API LangGraph"
+    DEBUG: bool = False
+    VERSION: str = "0.1.0"
+    API_PREFIX: str = "/api/v1"
+    
+    class Config:
+        env_file = ".env"
 
-class Config:
-    APP_ENV = os.getenv("APP_ENV")
-    APP_PORT = os.getenv("APP_PORT")
-    APP_HOST = os.getenv("APP_HOST")
-    LANGGRAPH_CONFIG_PATH = os.getenv("LANGGRAPH_CONFIG_PATH")
+@lru_cache()
+def get_settings():
+    return Settings()
+
+settings = get_settings()
