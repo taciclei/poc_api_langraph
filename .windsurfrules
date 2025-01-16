@@ -1,0 +1,114 @@
+{
+    "1. Language Settings": {
+      "PRIMARY_LANGUAGE": "French",
+      "TECHNICAL_LANGUAGE": "English",
+      "CODE_LANGUAGE": "English"
+    },
+  
+    "2. Project Structure": {
+      "structure": {
+        "src/": {
+          "api/": {
+            "routes/": "FastAPI route handlers",
+            "models/": "Pydantic models"
+          },
+          "core/": "Core configurations and exceptions",
+          "services/": "Business logic and LangGraph services"
+        },
+        "tests/": "Test suites",
+        "docs/": {
+          "technical/": "Technical docs (English)",
+          "user/": "User docs (French)"
+        }
+      }
+    },
+  
+    "3. Code Generation Rules": {
+      "python": {
+        "formatter": "black",
+        "linter": "ruff",
+        "max_line_length": 88,
+        "imports_ordering": true,
+        "type_checking": "strict",
+        "docstring_style": "google"
+      }
+    },
+  
+    "4. LLM Assistant Behavior": {
+      "role": "Expert Python/FastAPI Developer",
+      "expertise": ["FastAPI", "LangGraph", "Python", "Testing", "SOLID"],
+      "code_style": "Clean Architecture",
+      "response_format": "markdown",
+      "proactivity_level": "high"
+    },
+  
+    "5. Code Execution Rules": {
+      "verify_directory": true,
+      "safety_checks": true,
+      "environment": "magic",
+      "show_output": true,
+      "error_handling": "verbose"
+    },
+  
+    "6. Documentation Generation": {
+      "api": "English",
+      "internal": "English",
+      "user_facing": "French",
+      "auto_update": true,
+      "api_docs": "FastAPI SwaggerUI"
+    },
+  
+    "7. Project Standards": {
+      "architecture": "SOLID",
+      "testing": {
+        "coverage_min": 80,
+        "frameworks": ["pytest", "httpx"],
+        "types": ["unit", "integration", "e2e"]
+      },
+      "git": {
+        "branch_prefix": {
+          "feature": "feature/",
+          "bugfix": "bugfix/",
+          "hotfix": "hotfix/"
+        },
+        "commit_convention": "conventional-commits"
+      }
+    },
+  
+    "8. Environment": {
+      "os": "macOS M1 Ultra",
+      "package_manager": "magic",
+      "python_version": "3.11+",
+      "config_file": "pixi.toml"
+    },
+  
+    "9. Security Rules": {
+      "env_vars": ".env",
+      "secrets_management": "strict",
+      "api_keys": "environment_variables_only",
+      "cors": "configured",
+      "auth": "fastapi-security"
+    },
+  
+    "10. API Standards": {
+      "validation": "pydantic",
+      "error_handling": "custom exceptions",
+      "rate_limiting": true,
+      "logging": "structured",
+      "accessibility": "openapi"
+    },
+  
+    "guidelines": [
+      {
+        "name": "bug-focus",
+        "description": "Focus sur la résolution des bugs spécifiques plutôt que sur la restructuration complète du projet",
+        "rules": [
+          "Prioriser la résolution du problème spécifique mentionné",
+          "Ne pas suggérer de restructuration sauf si explicitement demandé",
+          "Garder les solutions minimales et focalisées",
+          "Commencer par la solution la moins invasive",
+          "Demander des clarifications si la description du bug n'est pas claire"
+        ]
+      }
+    ]
+  }

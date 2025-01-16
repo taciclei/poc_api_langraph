@@ -1,0 +1,22 @@
+[project]
+authors = ["Taciclei Souza Hortencio <contact@taciclei.com>"]
+channels = ["conda-forge", "https://conda.modular.com/max"]
+description = "Add a short description here"
+name = "poc_api_langraph"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+start = "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
+
+[dependencies]
+max = ">=24.6.0,<25"
+fastapi = "0.104.0"
+uvicorn = "*"
+python-dotenv = "*"
+langgraph = "*"
+pydantic = ">=2.4.0"
+langchain = "*"
+tinydb = "*"
+
+[pypi-dependencies]
