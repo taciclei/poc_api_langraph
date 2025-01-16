@@ -1,54 +1,29 @@
-# 🗺️ Roadmap POC API LangGraph
+# Roadmap du Projet
 
-## 🎯 Objectifs Principaux
+## Version 0.1.0 ✅
+- [x] Structure de base de l'API FastAPI
+- [x] Gestion des graphes (CRUD)
+- [x] Documentation OpenAPI/Swagger
+- [x] Configuration de base
 
-- Créer une API RESTful robuste pour la gestion des graphes LangChain
-- Faciliter l'intégration avec différents modèles de langage
-- Assurer une excellente expérience développeur
-- Maintenir une documentation claire et à jour
+## Version 0.2.0 ✅
+- [x] Gestion complète des nœuds
+- [x] Gestion des arêtes
+- [x] Validation avancée des graphes
+- [x] Tests unitaires de base
+- [x] Service de validation pour les graphes
+- [x] Intégration de dotenv
 
-## ✅ Fonctionnalités Implémentées
+## Version 0.3.0 ✅
+- [x] Système complet d'exécution des graphes
+- [x] Service d'exécution avec gestion des états
+- [x] Routes API pour la gestion des exécutions
+- [x] Tests unitaires pour le service d'exécution
+- [x] Monitoring des exécutions de graphes
 
-### Version 0.1.0
-- ✅ Structure de base de l'API FastAPI
-- ✅ Gestion des graphes (CRUD)
-- ✅ Documentation OpenAPI/Swagger
-- ✅ Configuration de base
-
-### Version 0.2.0
-- ✅ Gestion complète des nœuds
-- ✅ Gestion des arêtes
-- ✅ Validation avancée des graphes
-- ✅ Tests unitaires de base
-- ✅ Service de validation pour les graphes
-- ✅ Intégration de dotenv
-
-## 🚀 En Cours (Version 0.3.0)
-- [ ] Exécution des graphes
-- [ ] Monitoring des exécutions
+## Version 0.4.0 🚧
 - [ ] Gestion des erreurs avancée
+- [ ] Système de logging détaillé
+- [ ] Métriques de performance
+- [ ] Documentation technique complète
 - [ ] Tests d'intégration
-- [ ] Amélioration de la couverture des tests (objectif 80%)
-
-## 📋 Backlog
-
-### Version 0.4.0 (Planifiée)
-- [ ] Authentification JWT
-- [ ] Rate limiting
-- [ ] Configuration CORS
-- [ ] Logging structuré
-- [ ] Métriques et monitoring
-
-### Améliorations Techniques
-- [ ] Cache Redis pour les résultats d'exécution
-- [ ] Migration vers une base de données PostgreSQL
-- [ ] Support Docker
-- [ ] CI/CD Pipeline
-- [ ] Optimisations pour Mac M1 Ultra
-
-### Fonctionnalités Futures
-- [ ] Interface d'administration
-- [ ] Visualisation des graphes
-- [ ] Export/Import de graphes
-- [ ] API WebSocket pour le streaming
-- [ ] Documentation multilingue (FR/EN)
