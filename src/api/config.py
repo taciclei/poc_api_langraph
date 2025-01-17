@@ -1,65 +1,28 @@
+from functools import lru_cache
 from pydantic_settings import BaseSettings
-from typing import Optional, Literal
-import os
-from pathlib import Path
-from enum import Enum
-
-class LogLevel(str, Enum):
-    DEBUG = "DEBUG"
-    INFO = "INFO"
-    WARNING = "WARNING"
-    ERROR = "ERROR"
-
-class CacheType(str, Enum):
-    TINYDB = "tinydb"
-    REDIS = "redis"
-    MEMORY = "memory"
+from typing import Optional
 
 class Settings(BaseSettings):
-    # Chemins
-    BASE_DIR: Path = Path(__file__).parent.parent.parent
-    CACHE_DIR: Path = BASE_DIR / "cache"
-    DATA_DIR: Path = BASE_DIR / "data"
+    # Database settings
+    DATABASE_URL: str = "sqlite:///./test.db"
     
-    # Configuration du cache
-    CACHE_TYPE: CacheType = CacheType.TINYDB
-    CACHE_DB_PATH: str = "cache.json"
-    CACHE_TTL: int = 3600  # 1 heure par défaut
-    DB_PATH: Path = CACHE_DIR / CACHE_DB_PATH
+    # LLM settings
+    LLM_MODEL: str = "gpt-3.5-turbo"
+    LLM_API_KEY: Optional[str] = None
+    LLM_TEMPERATURE: float = 0.7
+    LLM_MAX_TOKENS: int = 1000
     
-    # Configuration de la base de données
-    DATABASE_URL: str = "sqlite:///./app.db"
+    # Cache settings
+    CACHE_TTL: int = 3600  # 1 hour
     
-    # Configuration des logs
-    LOG_LEVEL: LogLevel = LogLevel.INFO
-    
-    # Clés API
-    OPENAI_API_KEY: Optional[str] = None
-    ANTHROPIC_API_KEY: Optional[str] = None
-    MISTRAL_API_KEY: Optional[str] = None
-    
-    # Configuration LLM
-    DEFAULT_MODEL: str = "gpt-4"
-    MAX_RETRIES: int = 3
-    REQUEST_TIMEOUT: int = 30
+    # API settings
+    API_PREFIX: str = "/api/v1"
+    DEBUG: bool = True
     
     class Config:
         env_file = ".env"
-        env_file_encoding = "utf-8"
-        use_enum_values = True
+        case_sensitive = True
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Créer les répertoires nécessaires
-        self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        self.DATA_DIR.mkdir(parents=True, exist_ok=True)
-        # Mise à jour du DB_PATH après l'initialisation
-        self.DB_PATH = self.CACHE_DIR / self.CACHE_DB_PATH
-
-_settings = None
-
+@lru_cache()
 def get_settings() -> Settings:
-    global _settings
-    if _settings is None:
-        _settings = Settings()
-    return _settings
+    return Settings()

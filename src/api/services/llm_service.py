@@ -1,30 +1,29 @@
-from typing import AsyncGenerator, Optional, Dict, Any
-from ..llm.fallback.llm_manager import LLMManager
-from ..llm.providers.openai_llm import OpenAILLM
-import time
+from typing import Dict, Any, List
+from src.api.config import get_settings
+
+settings = get_settings()
 
 class LLMService:
     def __init__(self):
-        self.llm_manager = LLMManager([
-            OpenAILLM()
-        ])
+        self.model = settings.LLM_MODEL
+        self.api_key = settings.LLM_API_KEY
+        self.temperature = settings.LLM_TEMPERATURE
+        self.max_tokens = settings.LLM_MAX_TOKENS
 
-    async def generate(self, prompt: str, **kwargs) -> Dict[str, Any]:
-        """Génère une réponse"""
-        start_time = time.time()
-        try:
-            response = await self.llm_manager.generate(prompt, **kwargs)
-            return {
-                "text": response,
-                "duration": time.time() - start_time
-            }
-        except Exception as e:
-            return {
-                "error": str(e),
-                "duration": time.time() - start_time
-            }
+    async def complete(self, prompt: Dict[str, Any]) -> Dict[str, Any]:
+        """Génère une complétion de texte"""
+        # TODO: Implémenter l'appel à l'API LLM réelle
+        return {
+            "model": self.model,
+            "completion": f"Sample completion for: {prompt.get('text', '')}",
+            "tokens_used": 10
+        }
 
-    async def stream(self, prompt: str, **kwargs) -> AsyncGenerator[str, None]:
-        """Stream une réponse"""
-        async for chunk in self.llm_manager.stream(prompt, **kwargs):
-            yield chunk
+    async def chat(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
+        """Génère une réponse de chat"""
+        # TODO: Implémenter l'appel à l'API LLM réelle
+        return {
+            "model": self.model,
+            "response": "Sample response",
+            "tokens_used": 10
+        }

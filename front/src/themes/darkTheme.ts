@@ -1,17 +1,13 @@
 import { createTheme } from '@mui/material/styles';
 
-export const darkTheme = createTheme({
+const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#3f51b5',
-      light: '#757de8',
-      dark: '#002984',
+      main: '#90caf9',
     },
     secondary: {
-      main: '#f50057',
-      light: '#ff4081',
-      dark: '#c51162',
+      main: '#f48fb1',
     },
     background: {
       default: '#121212',
@@ -19,10 +15,19 @@ export const darkTheme = createTheme({
     },
   },
   components: {
-    MuiDrawer: {
+    MuiCssBaseline: {
       styleOverrides: {
-        paper: {
-          backgroundColor: '#1e1e1e',
+        body: {
+          scrollbarColor: '#6b6b6b #2b2b2b',
+          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+            backgroundColor: '#2b2b2b',
+            width: 8,
+          },
+          '&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb': {
+            borderRadius: 8,
+            backgroundColor: '#6b6b6b',
+            minHeight: 24,
+          },
         },
       },
     },
@@ -35,3 +40,5 @@ export const darkTheme = createTheme({
     },
   },
 });
+
+export default darkTheme;

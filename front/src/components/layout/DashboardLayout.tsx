@@ -1,36 +1,16 @@
-import React from 'react';
-import { Box, CssBaseline, Drawer, AppBar, Toolbar, Typography, IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Menu as MenuIcon, Dashboard, Timeline, Settings, Code } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Box, AppBar, Toolbar, Typography, Drawer } from '@mui/material';
+import { Navigation } from './Navigation';
 
-const drawerWidth = 240;
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
 
-export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [open, setOpen] = React.useState(true);
-  const navigate = useNavigate();
-
-  const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/' },
-    { text: 'Graphs', icon: <Code />, path: '/graphs' },
-    { text: 'Executions', icon: <Timeline />, path: '/executions' },
-    { text: 'Settings', icon: <Settings />, path: '/settings' },
-  ];
-
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="toggle drawer"
-            onClick={() => setOpen(!open)}
-            edge="start"
-            sx={{ marginRight: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap>
             LangGraph Studio
           </Typography>
         </Toolbar>
@@ -38,28 +18,30 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
       <Drawer
         variant="permanent"
         sx={{
-          width: drawerWidth,
+          width: 240,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+          },
         }}
-        open={open}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {menuItems.map((item) => (
-              <ListItem button key={item.text} onClick={() => navigate(item.path)}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        <Navigation />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - 240px)` },
+        }}
+      >
         <Toolbar />
         {children}
       </Box>
     </Box>
   );
 };
+
+export default DashboardLayout;
