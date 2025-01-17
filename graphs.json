@@ -1,0 +1,1 @@
+{"_default": {"1": {"id": "test-graph", "nodes": [{"id": "node1", "type": "llm", "config": {"prompt_template": "Summarize: {input}"}}, {"id": "node2", "type": "processing", "config": {}}], "edges": [{"source": "node1", "target": "node2"}]}}}

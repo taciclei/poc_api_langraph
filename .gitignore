@@ -7,3 +7,9 @@ venv/
 .magic/
 data/
 .DS_Store
+db.json
+# Test files
+test.db
+test_cache.json
+.coverage
+htmlcov/

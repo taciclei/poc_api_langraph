@@ -1,32 +1,46 @@
 # Changelog
 
-## [0.3.0] - 2025-01-16
+## [1.0.0] - 2025-01-16
 
 ### Added
-- Système complet d'exécution des graphes
-- Service d'exécution avec gestion des états
-- Routes API pour la gestion des exécutions
-- Tests unitaires pour le service d'exécution
-- Monitoring des exécutions de graphes
+- Moteur d'exécution LangGraph
+- Système de nœuds modulaire
+- API RESTful complète
+- Documentation avec diagrammes
+- Tests unitaires et d'intégration
+- Système de persistance TinyDB
 
 ### Changed
-- Mise à jour de l'architecture pour supporter l'exécution des graphes
-- Amélioration de la documentation API
+- N/A (première version)
 
-## [0.2.0] - 2025-01-16
+### Deprecated
+- N/A
 
-### Added
-- Gestion complète des nœuds
-- Gestion des arêtes
-- Validation avancée des graphes
-- Tests unitaires de base
-- Service de validation pour les graphes
-- Intégration de dotenv
+### Removed
+- N/A
 
-## [0.1.0] - 2025-01-15
+### Fixed
+- N/A
 
-### Added
-- Structure de base de l'API FastAPI
-- Gestion des graphes (CRUD)
-- Documentation OpenAPI/Swagger
-- Configuration de base
+### Security
+- Gestion sécurisée des clés API
+
+## [1.1.0] - 2025-01-17
+
+### Ajouté
+- Support complet des graphes avec nœuds et arêtes
+- Système de migration avec Alembic
+- Cache intelligent pour les requêtes fréquentes
+- Jeu de données de test
+
+### Modifié
+- Optimisation du schéma de base de données
+- Amélioration de la gestion des relations entre nœuds
+
+### Corrigé
+- Problèmes de performance avec les requêtes complexes
+- Gestion des erreurs dans les transactions
+
+### Sécurité
+- Validation des entrées renforcée
+- Protection contre les injections SQL

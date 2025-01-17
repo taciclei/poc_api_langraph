@@ -1,31 +1,23 @@
-from typing import Dict, List, Optional
-import uuid
-from fastapi import HTTPException
-from .base_db_service import BaseDBService
+from typing import List, Optional
+from ..models.graph import Graph, Node, Edge
 
-class GraphService(BaseDBService):
-    table_name = "graphs"
-
-    @classmethod
-    def create_graph(cls, graph_data: Dict) -> Dict:
-        graph_data["_id"] = str(uuid.uuid4())
-        return cls.create(graph_data)
-
-    @classmethod
-    def get_graph(cls, graph_id: str) -> Dict:
-        graph = cls.get_by_id(graph_id)
-        if not graph:
-            raise HTTPException(status_code=404, detail="Graph not found")
+class GraphService:
+    async def create_graph(self, graph: Graph) -> Graph:
+        # TODO: Implémenter la logique de création
         return graph
 
-    @classmethod
-    def list_graphs(cls, status: Optional[str] = None, skip: int = 0, limit: int = 10) -> List[Dict]:
-        filter_dict = {"status": status} if status else None
-        return cls.list(filter_dict, skip, limit)
+    async def get_graph(self, graph_id: str) -> Optional[Graph]:
+        # TODO: Implémenter la logique de récupération
+        return None
 
-    @classmethod
-    def validate_graph(cls, graph_id: str) -> Dict:
-        from .validation_service import ValidationService
-        graph = cls.get_graph(graph_id)
-        validation_result = ValidationService.validate_graph_structure(graph_id)
-        return {**graph, "validation": validation_result}
+    async def list_graphs(self) -> List[Graph]:
+        # TODO: Implémenter la logique de liste
+        return []
+
+    async def update_graph(self, graph_id: str, graph: Graph) -> Optional[Graph]:
+        # TODO: Implémenter la logique de mise à jour
+        return graph
+
+    async def delete_graph(self, graph_id: str) -> bool:
+        # TODO: Implémenter la logique de suppression
+        return True

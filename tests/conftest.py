@@ -1,31 +1,23 @@
 import pytest
-from fastapi.testclient import TestClient
-from src.main import app
+import httpx
+from src.api.main import app
 
 @pytest.fixture
-def client():
-    return TestClient(app)
+async def client():
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app),
+        base_url="http://test"
+    ) as client:
+        yield client
 
 @pytest.fixture
 def test_graph():
     return {
+        "id": "test-graph",
         "name": "Test Graph",
-        "description": "A test graph",
-        "status": "draft"
+        "description": "A test graph"
     }
 
-@pytest.fixture
-def test_node():
-    return {
-        "name": "Test Node",
-        "type": "process",
-        "config": {"key": "value"}
-    }
-
-@pytest.fixture
-def test_edge():
-    return {
-        "source_id": "source_id",
-        "target_id": "target_id",
-        "type": "default"
-    }
+# Configure pytest pour utiliser asyncio
+def pytest_configure(config):
+    pytest.register_assert_rewrite("tests")
