@@ -1,52 +1,40 @@
-from typing import Dict, List, Optional
-import openai
-from ..interface.base_llm import BaseLLM, LLMResponse
+from typing import AsyncGenerator, Optional
+from openai import AsyncOpenAI
+from ...config import get_settings
+from ..base_llm import BaseLLM
+
+settings = get_settings()
 
 class OpenAILLM(BaseLLM):
-    def __init__(self, model_name: str = "gpt-3.5-turbo", api_key: Optional[str] = None):
-        self.model_name = model_name
-        if api_key:
-            openai.api_key = api_key
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
+        self.api_key = api_key or settings.OPENAI_API_KEY
+        self._provider = "openai"
+        self._model = model or settings.DEFAULT_MODEL
+        self.client = AsyncOpenAI(api_key=self.api_key)
 
-    async def generate(self, 
-                      prompt: str,
-                      max_tokens: Optional[int] = None,
-                      temperature: float = 0.7,
-                      stop_sequences: Optional[List[str]] = None) -> LLMResponse:
-        response = await openai.ChatCompletion.acreate(
-            model=self.model_name,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=max_tokens,
-            temperature=temperature,
-            stop=stop_sequences
-        )
-        
-        return LLMResponse(
-            text=response.choices[0].message.content,
-            tokens_used=response.usage.total_tokens,
-            model_name=self.model_name,
-            provider="openai",
-            metadata={"finish_reason": response.choices[0].finish_reason}
-        )
+    @property
+    def provider(self) -> str:
+        return self._provider
 
-    async def stream(self, 
-                    prompt: str,
-                    max_tokens: Optional[int] = None,
-                    temperature: float = 0.7,
-                    stop_sequences: Optional[List[str]] = None):
-        async for chunk in await openai.ChatCompletion.acreate(
-            model=self.model_name,
+    @property
+    def model(self) -> str:
+        return self._model
+
+    async def generate(self, prompt: str, **kwargs) -> str:
+        response = await self.client.chat.completions.create(
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=max_tokens,
-            temperature=temperature,
-            stop=stop_sequences,
-            stream=True
+            stream=False,
+            **kwargs
+        )
+        return response.choices[0].message.content
+
+    async def stream(self, prompt: str, **kwargs) -> AsyncGenerator[str, None]:
+        async for chunk in await self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            stream=True,
+            **kwargs
         ):
-            if chunk and chunk.choices and chunk.choices[0].delta.content:
+            if chunk.choices[0].delta.content:
                 yield chunk.choices[0].delta.content
-
-    def get_token_count(self, text: str) -> int:
-        # Utiliser tiktoken pour le comptage précis des tokens
-        import tiktoken
-        encoding = tiktoken.encoding_for_model(self.model_name)
-        return len(encoding.encode(text))

@@ -1,0 +1,10 @@
+Metadata-Version: 2.2
+Name: poc_api_langraph
+Version: 1.1.0
+Requires-Dist: fastapi>=0.100.0
+Requires-Dist: uvicorn>=0.22.0
+Requires-Dist: sqlalchemy>=2.0.0
+Requires-Dist: alembic>=1.14.0
+Requires-Dist: psycopg2-binary>=2.9.9
+Requires-Dist: asyncpg>=0.30.0
+Dynamic: requires-dist

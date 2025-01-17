@@ -1,256 +1,147 @@
-# 🚀 LangGraph API
+# API LangGraph
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/python-3.12-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![LangChain](https://img.shields.io/badge/🦜_LangChain-blue?style=for-the-badge)](https://github.com/hwchase17/langchain)
+API de gestion de graphes pour le traitement du langage naturel avec support multi-LLMs.
 
-Une API FastAPI pour créer et exécuter des graphes de traitement de langage naturel avec LangGraph et LangChain.
+## 🌟 Fonctionnalités
 
-## 📑 Table des Matières
+- Support multi-providers LLM (OpenAI, Mistral, Hugging Face)
+- Gestion complète des graphes (CRUD)
+- Validation avancée des graphes
+- Système d'exécution avec monitoring
+- Cache intelligent (en cours)
+- API RESTful documentée
 
-- [Architecture](#-architecture)
-- [Fonctionnalités](#-fonctionnalités)
-- [Types de Nœuds](#-types-de-nœuds)
-- [Installation](#-installation)
-- [Utilisation](#-utilisation)
-- [Documentation API](#-documentation-api)
-- [Tests](#-tests)
-- [Exemples](#-exemples)
-- [License](#-license)
+## 🚀 Installation
 
-## 🏗 Architecture
-
-```mermaid
-graph TB
-    A[Client] -->|HTTP Request| B[FastAPI]
-    B --> C[Router Layer]
-    C --> D[Service Layer]
-    D --> E[Graph Engine]
-    E --> F[Node Types]
-    F -->|LLM| G[OpenAI]
-    F -->|Processing| H[Custom Logic]
-    F -->|Validation| I[Schema Check]
-    E --> J[TinyDB]
-    style A fill:#f9f,stroke:#333,stroke-width:4px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bfb,stroke:#333,stroke-width:2px
-```
-
-## 🚀 Fonctionnalités
-
-- ⚡️ **Exécution Asynchrone**: Traitement parallèle des nœuds du graphe
-- 🔄 **État Persistant**: Sauvegarde automatique de l'état d'exécution
-- 🎯 **Validation Intégrée**: Vérification des données à chaque étape
-- 📊 **Monitoring**: Suivi en temps réel des exécutions
-- 🔌 **Extensible**: Architecture modulaire pour ajouter de nouveaux types de nœuds
-
-## 📋 Types de Nœuds
-
-### Architecture des Nœuds
-
-```mermaid
-classDiagram
-    BaseNode <|-- LLMNode
-    BaseNode <|-- ProcessingNode
-    BaseNode <|-- ValidationNode
-    BaseNode <|-- TransformationNode
-    BaseNode <|-- AggregationNode
-    BaseNode <|-- FilterNode
-    
-    class BaseNode{
-        +__call__(state) Dict
-    }
-    class LLMNode{
-        +prompt_template
-        +memory
-        +llm
-    }
-    class ProcessingNode{
-        +processor_func
-    }
-    class ValidationNode{
-        +schema
-    }
-```
-
-### 1. LLMNode
-Nœud pour les opérations de modèle de langage
-```python
-{
-    "type": "llm",
-    "config": {
-        "prompt_template": "Résume le texte suivant: {input}",
-        "memory": true  # Optional
-    }
-}
-```
-
-### 2. ProcessingNode
-Nœud pour le traitement personnalisé des données
-```python
-{
-    "type": "processing",
-    "config": {
-        "function": "custom_process"
-    }
-}
-```
-
-### 3. ValidationNode
-Nœud pour la validation des données
-```python
-{
-    "type": "validation",
-    "config": {
-        "schema": {
-            "text": str,
-            "count": int
-        }
-    }
-}
-```
-
-## 🔧 Installation
-
-### Prérequis
-
-- Python 3.12+
-- pip
-- git
-
-```bash
+\```bash
 # Cloner le repository
-git clone https://github.com/votre-username/langgraph-api.git
-cd langgraph-api
-
-# Créer un environnement virtuel
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-.\venv\Scripts\activate  # Windows
+git clone https://github.com/yourusername/poc_api_langraph.git
+cd poc_api_langraph
 
 # Installer les dépendances
 pip install -r requirements.txt
 
 # Configurer les variables d'environnement
-cp .env.example .env
+cp .env.template .env
 # Éditer .env avec vos clés API
-```
+\```
 
-## 🚦 Utilisation
+## 📖 Documentation
 
-### Flux de Travail Typique
+### Configuration des LLMs
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant A as API
-    participant G as Graph Engine
-    participant N as Nodes
-    participant DB as Database
-    
-    C->>A: Créer un graphe
-    A->>DB: Sauvegarder config
-    DB-->>A: Confirmer
-    A-->>C: graph_id
-    
-    C->>A: Démarrer exécution
-    A->>G: Initialiser graphe
-    G->>N: Exécuter nœuds
-    N-->>G: Résultats
-    G->>DB: Sauvegarder résultats
-    G-->>A: Status
-    A-->>C: execution_id
-```
+Pour utiliser les différents LLMs, configurez vos clés API dans le fichier `.env` :
 
-### Exemples d'Utilisation
+\```bash
+# OpenAI
+ENABLE_OPENAI=true
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-4
 
-#### 1. Créer un Graphe de Résumé
-```bash
-curl -X POST http://localhost:8000/graph/create \
+# Mistral
+ENABLE_MISTRAL=true
+MISTRAL_API_KEY=your_key_here
+MISTRAL_MODEL=mistral-medium
+
+# Hugging Face
+ENABLE_HUGGINGFACE=true
+HUGGINGFACE_API_KEY=your_key_here
+HUGGINGFACE_MODEL=mistralai/Mistral-7B-Instruct-v0.2
+\```
+
+### Utilisation de l'API
+
+#### Lister les providers LLM disponibles
+
+\```bash
+curl -X GET http://localhost:8000/llm/providers
+\```
+
+#### Générer du texte avec un LLM spécifique
+
+\```bash
+curl -X POST http://localhost:8000/llm/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Votre prompt ici", "provider": "mistral"}'
+\```
+
+#### Créer un nouveau graphe
+
+\```bash
+curl -X POST http://localhost:8000/graphs \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Summarization Workflow",
-    "description": "Summarize and process text",
-    "nodes": [
-      {
-        "id": "summarize",
-        "type": "llm",
-        "config": {
-          "prompt_template": "Summarize: {input}"
-        }
-      },
-      {
-        "id": "validate",
-        "type": "validation",
-        "config": {
-          "schema": {
-            "text": "str"
-          }
-        }
-      }
-    ],
-    "edges": [
-      {
-        "source": "summarize",
-        "target": "validate"
-      }
-    ]
+    "name": "Mon Graphe",
+    "description": "Description du graphe",
+    "nodes": [],
+    "edges": []
   }'
-```
+\```
 
-#### 2. Exécuter le Graphe
-```bash
-curl -X POST http://localhost:8000/execution/start \
-  -H "Content-Type: application/json" \
-  -d '{
-    "graph_id": "votre-graph-id",
-    "input_data": {
-      "input": "Votre texte à traiter"
-    }
-  }'
-```
+## 🔄 Versions
 
-## 📚 Documentation API
+- [x] Version 0.1.0 : Structure de base
+- [x] Version 0.2.0 : Gestion des graphes
+- [x] Version 0.3.0 : Système d'exécution
+- [x] Version 1.0.0 : Support multi-LLMs
+- [ ] Version 1.1.0 : Cache et monitoring avancé
 
-La documentation Swagger est disponible à l'adresse : \`http://localhost:8000/docs\`
+## 📊 Roadmap
 
-### Structure du Projet
+Voir [ROADMAP.md](ROADMAP.md) pour les détails des futures versions.
 
-```
-src/
-├── api/
-│   ├── models/          # Modèles Pydantic
-│   ├── routes/          # Routes FastAPI
-│   ├── services/        # Logique métier
-│   │   └── execution/   # Moteur d'exécution
-│   └── main.py         # Point d'entrée
-├── tests/              # Tests unitaires et d'intégration
-└── docs/              # Documentation détaillée
-```
+## 🛠 Stack Technique
 
-## 🧪 Tests
-
-```bash
-# Exécuter tous les tests
-pytest tests/ -v
-
-# Exécuter les tests avec couverture
-pytest tests/ -v --cov=src
-
-# Exécuter un test spécifique
-pytest tests/api/services/test_execution_service.py -v
-```
+- Python 3.12+
+- FastAPI
+- SQLite
+- TinyDB
 
 ## 📝 License
 
 MIT License
 
-## 🤝 Contribution
+## Nouvelles fonctionnalités (v1.1.0)
 
-Les contributions sont les bienvenues ! Consultez notre [guide de contribution](CONTRIBUTING.md).
+### Gestion des graphes
+\`\`\`python
+# Exemple de création d'un graphe
+graph = Graph(name="Mon Graphe", description="Description du graphe")
 
----
+# Ajout de nœuds
+node1 = Node(
+    graph_id=graph.id,
+    name="Node 1",
+    type="llm",
+    config={"model": "mistral-7b-instruct"}
+)
 
-⭐️ Si ce projet vous aide, n'hésitez pas à lui donner une étoile sur GitHub !
+# Création de relations
+edge = Edge(
+    graph_id=graph.id,
+    source_id=node1.id,
+    target_id=node2.id,
+    config={"type": "data_flow"}
+)
+\`\`\`
+
+### Migrations
+\`\`\`bash
+# Créer une nouvelle migration
+make migrations message="ma_migration"
+
+# Appliquer les migrations
+make migrate
+
+# Revenir en arrière
+make rollback
+\`\`\`
+
+### Tests
+\`\`\`bash
+# Exécuter les tests
+make test
+
+# Insérer des données de test
+python scripts/seed_test_data.py
+\`\`\`

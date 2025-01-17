@@ -1,26 +1,10 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from .api.routes import graph_routes
-from .core.db import DBConfig
+from src.api.routes.llm_routes import router as llm_router
 
-app = FastAPI()
+app = FastAPI(title="LangGraph API")
 
-# CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.include_router(llm_router)
 
-@app.on_event("startup")
-def startup():
-    DBConfig.connect()
-
-@app.on_event("shutdown")
-def shutdown():
-    DBConfig.close()
-
-# Routes
-app.include_router(graph_routes.router)
+@app.get("/")
+async def root():
+    return {"message": "Welcome to LangGraph API"}

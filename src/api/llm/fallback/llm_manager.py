@@ -1,65 +1,38 @@
-from typing import List, Optional, Dict
-from ..interface.base_llm import BaseLLM, LLMResponse
+from typing import List, AsyncGenerator
+from ..providers.openai_llm import OpenAILLM
+from ..base_llm import BaseLLM
+import logging
+
+logger = logging.getLogger(__name__)
 
 class LLMManager:
-    def __init__(self, providers: List[BaseLLM], max_retries: int = 3):
-        self.providers = providers
-        self.max_retries = max_retries
-        self._current_provider = 0
+    def __init__(self, providers: List[BaseLLM] = None):
+        self.providers = providers or [OpenAILLM()]
 
-    async def generate_with_fallback(self, 
-                                   prompt: str,
-                                   max_tokens: Optional[int] = None,
-                                   temperature: float = 0.7,
-                                   stop_sequences: Optional[List[str]] = None) -> LLMResponse:
-        errors = []
-        retries = 0
+    async def generate(self, prompt: str, **kwargs) -> str:
+        """Génère une réponse avec fallback"""
+        last_error = None
         
-        while retries < self.max_retries * len(self.providers):
-            provider = self.providers[self._current_provider]
+        for provider in self.providers:
             try:
-                response = await provider.generate(
-                    prompt=prompt,
-                    max_tokens=max_tokens,
-                    temperature=temperature,
-                    stop_sequences=stop_sequences
-                )
-                return response
+                return await provider.generate(prompt, **kwargs)
             except Exception as e:
-                errors.append({
-                    "provider": provider.__class__.__name__,
-                    "error": str(e)
-                })
-                self._current_provider = (self._current_provider + 1) % len(self.providers)
-                retries += 1
+                logger.warning(f"Error with {provider.provider}: {str(e)}")
+                last_error = e
         
-        raise Exception(f"All providers failed after {retries} attempts: {errors}")
+        raise last_error or Exception("No available LLM providers")
 
-    async def stream_with_fallback(self, 
-                                 prompt: str,
-                                 max_tokens: Optional[int] = None,
-                                 temperature: float = 0.7,
-                                 stop_sequences: Optional[List[str]] = None):
-        errors = []
-        retries = 0
+    async def stream(self, prompt: str, **kwargs) -> AsyncGenerator[str, None]:
+        """Stream une réponse avec fallback"""
+        last_error = None
         
-        while retries < self.max_retries * len(self.providers):
-            provider = self.providers[self._current_provider]
+        for provider in self.providers:
             try:
-                async for chunk in provider.stream(
-                    prompt=prompt,
-                    max_tokens=max_tokens,
-                    temperature=temperature,
-                    stop_sequences=stop_sequences
-                ):
+                async for chunk in provider.stream(prompt, **kwargs):
                     yield chunk
                 return
             except Exception as e:
-                errors.append({
-                    "provider": provider.__class__.__name__,
-                    "error": str(e)
-                })
-                self._current_provider = (self._current_provider + 1) % len(self.providers)
-                retries += 1
+                logger.warning(f"Error with {provider.provider}: {str(e)}")
+                last_error = e
         
-        raise Exception(f"All providers failed after {retries} attempts: {errors}")
+        raise last_error or Exception("No available LLM providers")

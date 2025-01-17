@@ -1,36 +1,42 @@
-from typing import Dict, List, Optional
-from tinydb import TinyDB, Query
-import uuid
+from typing import List, Optional, Dict, Any
+from ..models.graph import Graph, Node, Edge
+from ..database.graph_repository import GraphRepository
 
 class GraphService:
     def __init__(self):
-        self.db = TinyDB('db.json')
-        self.graphs = self.db.table('graphs')
+        self.repository = GraphRepository()
 
-    def create_graph(self, name: str, description: str, nodes: List[str], edges: List[Dict]) -> Dict:
-        """Create a new graph"""
-        graph_id = str(uuid.uuid4())
-        graph = {
-            "id": graph_id,
-            "name": name,
-            "description": description,
-            "nodes": nodes,
-            "edges": edges
-        }
-        self.graphs.insert(graph)
-        return graph
+    def create_graph(
+        self,
+        name: str,
+        description: str,
+        nodes: List[Dict[str, Any]],
+        edges: List[Dict[str, Any]]
+    ) -> Graph:
+        """Crée un nouveau graphe"""
+        graph = Graph(
+            nodes=[Node(**node) for node in nodes],
+            edges=[Edge(**edge) for edge in edges]
+        )
+        return self.repository.save(name, description, graph)
 
-    def get_graph(self, graph_id: str) -> Optional[Dict]:
-        """Get a graph by ID"""
-        Graph = Query()
-        result = self.graphs.search(Graph.id == graph_id)
-        return result[0] if result else None
+    def get_graph(self, graph_id: str) -> Optional[Graph]:
+        """Récupère un graphe par son ID"""
+        return self.repository.get(graph_id)
+
+    def list_graphs(self) -> List[Dict[str, Any]]:
+        """Liste tous les graphes"""
+        return self.repository.list_all()
 
     def delete_graph(self, graph_id: str) -> bool:
-        """Delete a graph by ID"""
-        Graph = Query()
-        return bool(self.graphs.remove(Graph.id == graph_id))
+        """Supprime un graphe"""
+        return self.repository.delete(graph_id)
 
-    def list_graphs(self) -> List[Dict]:
-        """List all graphs"""
-        return self.graphs.all()
+    def validate_graph(self, graph: Graph) -> bool:
+        """Valide la structure d'un graphe"""
+        # Vérifier que tous les edges référencent des nodes existants
+        node_ids = {node.id for node in graph.nodes}
+        for edge in graph.edges:
+            if edge.source not in node_ids or edge.target not in node_ids:
+                return False
+        return True
