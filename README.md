@@ -1,109 +1,147 @@
-# 🚀 POC API LangGraph
+# API LangGraph
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/python-3.12-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
+API de gestion de graphes pour le traitement du langage naturel avec support multi-LLMs.
 
-Une API RESTful moderne pour la gestion et l'exécution de graphes LangChain, construite avec FastAPI et TinyDB.
+## 🌟 Fonctionnalités
 
-## ✨ Fonctionnalités
+- Support multi-providers LLM (OpenAI, Mistral, Hugging Face)
+- Gestion complète des graphes (CRUD)
+- Validation avancée des graphes
+- Système d'exécution avec monitoring
+- Cache intelligent (en cours)
+- API RESTful documentée
 
-- 🌐 API RESTful complète
-- 📊 Gestion des graphes LangChain
-- 🔄 Exécution de workflows
-- 📝 Documentation OpenAPI/Swagger
-- 🔒 Gestion des erreurs robuste
-- 🚀 Performance optimisée
+## 🚀 Installation
 
-## 🛠️ Installation
-
-### Prérequis
-
-- Python 3.12+
-- Magic CLI
-
-### Installation rapide
-
-```bash
-# Cloner le dépôt
-git clone https://github.com/taciclei/poc_api_langraph.git
+\```bash
+# Cloner le repository
+git clone https://github.com/yourusername/poc_api_langraph.git
 cd poc_api_langraph
 
 # Installer les dépendances
-magic install
-```
+pip install -r requirements.txt
 
-### Variables d'environnement
-
-Copiez le fichier \`.env.example\` vers \`.env\` et ajustez les variables :
-
-```bash
-cp .env.example .env
-```
-
-## 🚀 Démarrage
-
-```bash
-magic run start
-```
-
-L'API sera disponible à :
-- API : http://localhost:8000
-- Documentation : http://localhost:8000/docs
-- Documentation alternative : http://localhost:8000/redoc
+# Configurer les variables d'environnement
+cp .env.template .env
+# Éditer .env avec vos clés API
+\```
 
 ## 📖 Documentation
 
-La documentation complète est disponible dans le dossier [docs](./docs).
+### Configuration des LLMs
 
-### Points d'entrée principaux
+Pour utiliser les différents LLMs, configurez vos clés API dans le fichier `.env` :
 
-- \`POST /api/v1/graphs\` - Créer un nouveau graphe
-- \`GET /api/v1/graphs\` - Lister les graphes
-- \`POST /api/v1/graphs/{graph_id}/execute\` - Exécuter un graphe
+\```bash
+# OpenAI
+ENABLE_OPENAI=true
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-4
 
-## 🏗️ Structure du projet
+# Mistral
+ENABLE_MISTRAL=true
+MISTRAL_API_KEY=your_key_here
+MISTRAL_MODEL=mistral-medium
 
-```
-src/
-  ├── api/            # Composants API
-  │   ├── models/     # Modèles Pydantic
-  │   ├── routes/     # Routes FastAPI
-  │   └── services/   # Services métier
-  ├── core/           # Configuration et utilitaires
-  └── main.py         # Point d'entrée
-```
+# Hugging Face
+ENABLE_HUGGINGFACE=true
+HUGGINGFACE_API_KEY=your_key_here
+HUGGINGFACE_MODEL=mistralai/Mistral-7B-Instruct-v0.2
+\```
 
-## 🧪 Tests
+### Utilisation de l'API
 
-```bash
-# Exécuter les tests
-magic test
+#### Lister les providers LLM disponibles
 
-# Avec couverture
-magic test --cov
-```
+\```bash
+curl -X GET http://localhost:8000/llm/providers
+\```
 
-## 🤝 Contribution
+#### Générer du texte avec un LLM spécifique
 
-Les contributions sont les bienvenues ! Consultez notre [guide de contribution](CONTRIBUTING.md).
+\```bash
+curl -X POST http://localhost:8000/llm/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Votre prompt ici", "provider": "mistral"}'
+\```
+
+#### Créer un nouveau graphe
+
+\```bash
+curl -X POST http://localhost:8000/graphs \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Mon Graphe",
+    "description": "Description du graphe",
+    "nodes": [],
+    "edges": []
+  }'
+\```
+
+## 🔄 Versions
+
+- [x] Version 0.1.0 : Structure de base
+- [x] Version 0.2.0 : Gestion des graphes
+- [x] Version 0.3.0 : Système d'exécution
+- [x] Version 1.0.0 : Support multi-LLMs
+- [ ] Version 1.1.0 : Cache et monitoring avancé
+
+## 📊 Roadmap
+
+Voir [ROADMAP.md](ROADMAP.md) pour les détails des futures versions.
+
+## 🛠 Stack Technique
+
+- Python 3.12+
+- FastAPI
+- SQLite
+- TinyDB
 
 ## 📝 License
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+MIT License
 
-## 📫 Contact
+## Nouvelles fonctionnalités (v1.1.0)
 
-- Créé par [Taciclei](https://github.com/taciclei)
-- Twitter : [@taciclei](https://twitter.com/taciclei)
+### Gestion des graphes
+\`\`\`python
+# Exemple de création d'un graphe
+graph = Graph(name="Mon Graphe", description="Description du graphe")
 
-## 🙏 Remerciements
+# Ajout de nœuds
+node1 = Node(
+    graph_id=graph.id,
+    name="Node 1",
+    type="llm",
+    config={"model": "mistral-7b-instruct"}
+)
 
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [LangChain](https://python.langchain.com/)
-- [TinyDB](https://tinydb.readthedocs.io/)
+# Création de relations
+edge = Edge(
+    graph_id=graph.id,
+    source_id=node1.id,
+    target_id=node2.id,
+    config={"type": "data_flow"}
+)
+\`\`\`
 
----
+### Migrations
+\`\`\`bash
+# Créer une nouvelle migration
+make migrations message="ma_migration"
 
-⭐️ Si ce projet vous aide, n'hésitez pas à lui donner une étoile sur GitHub !
+# Appliquer les migrations
+make migrate
+
+# Revenir en arrière
+make rollback
+\`\`\`
+
+### Tests
+\`\`\`bash
+# Exécuter les tests
+make test
+
+# Insérer des données de test
+python scripts/seed_test_data.py
+\`\`\`
