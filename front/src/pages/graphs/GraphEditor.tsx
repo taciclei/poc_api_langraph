@@ -1,19 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import ReactFlow, {
   Background,
   Controls,
-  Node,
-  Edge,
+  Connection,
   useNodesState,
   useEdgesState,
   addEdge,
-  Connection,
   useReactFlow,
+  Node,
+  ReactFlowInstance,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import { Box } from '@mui/material';
 import { Toolbar } from '../../components/graph-editor/Toolbar';
+import { NodePalette } from '../../components/graph-editor/palette/NodePalette';
+import { PropertiesPanel } from '../../components/graph-editor/properties/PropertiesPanel';
 import { CustomNodes } from '../../components/graph-editor/CustomNodes';
 import { CustomNode } from '../../types/graph';
 
@@ -29,53 +31,110 @@ const initialNodes: CustomNode[] = [
 const nodeTypes = CustomNodes;
 
 export const GraphEditor: React.FC = () => {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const [selectedNode, setSelectedNode] = React.useState<Node | null>(null);
+  const { zoomIn, zoomOut, fitView, project } = useReactFlow();
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
 
-  const handleSave = useCallback(() => {
-    // TODO: Implement save functionality
-    console.log('Saving graph:', { nodes, edges });
-  }, [nodes, edges]);
-
-  const handleRun = useCallback(() => {
-    // TODO: Implement run functionality
-    console.log('Running graph');
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const handleDelete = useCallback(() => {
-    // TODO: Implement delete functionality
-    setNodes((nds) => nds.filter((node) => !node.selected));
-    setEdges((eds) => eds.filter((edge) => !edge.selected));
-  }, [setNodes, setEdges]);
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+
+      if (reactFlowWrapper.current) {
+        const type = event.dataTransfer.getData('application/reactflow');
+        const position = project({
+          x: event.clientX - reactFlowWrapper.current.getBoundingClientRect().left,
+          y: event.clientY - reactFlowWrapper.current.getBoundingClientRect().top,
+        });
+
+        const newNode: CustomNode = {
+          id: `${type}-${Date.now()}`,
+          type: 'default',
+          position,
+          data: { label: `${type} node`, type },
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+      }
+    },
+    [project, setNodes],
+  );
+
+  const onNodeClick = useCallback(
+    (_: React.MouseEvent, node: Node) => {
+      setSelectedNode(node);
+    },
+    [setSelectedNode],
+  );
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNode(null);
+  }, [setSelectedNode]);
+
+  const handleNodeUpdate = useCallback(
+    (nodeId: string, data: any) => {
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              data,
+            };
+          }
+          return node;
+        }),
+      );
+    },
+    [setNodes],
+  );
 
   return (
-    <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-      <Toolbar
-        onSave={handleSave}
-        onRun={handleRun}
-        onZoomIn={() => zoomIn()}
-        onZoomOut={() => zoomOut()}
-        onFitView={() => fitView()}
-        onDelete={handleDelete}
-      />
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        fitView
+    <Box sx={{ display: 'flex', width: '100%', height: '100%' }}>
+      <NodePalette />
+      <Box
+        ref={reactFlowWrapper}
+        sx={{ flex: 1, height: '100%' }}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
       >
-        <Background />
-        <Controls />
-      </ReactFlow>
+        <Toolbar
+          onSave={() => console.log('Saving graph:', { nodes, edges })}
+          onRun={() => console.log('Running graph')}
+          onZoomIn={zoomIn}
+          onZoomOut={zoomOut}
+          onFitView={fitView}
+          onDelete={() => {
+            setNodes((nds) => nds.filter((node) => !node.selected));
+            setEdges((eds) => eds.filter((edge) => !edge.selected));
+          }}
+        />
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          fitView
+        >
+          <Background />
+          <Controls />
+        </ReactFlow>
+      </Box>
+      <PropertiesPanel selectedNode={selectedNode} onNodeUpdate={handleNodeUpdate} />
     </Box>
   );
 };
