@@ -1,47 +1,63 @@
-from typing import Dict, List, Optional
+from typing import Optional, Dict, Any, AsyncGenerator
 import anthropic
-from ..interface.base_llm import BaseLLM, LLMResponse
+
+from ..interface.base_llm import BaseLLM
+from ...config import get_settings
+
+settings = get_settings()
 
 class AnthropicLLM(BaseLLM):
-    def __init__(self, model_name: str = "claude-2", api_key: Optional[str] = None):
-        self.model_name = model_name
-        self.client = anthropic.Client(api_key=api_key)
+    def __init__(self, api_key: Optional[str] = None):
+        self.api_key = api_key or settings.ANTHROPIC_API_KEY
+        self.provider = "anthropic"
+        self.model = "claude-3-opus-20240229"
+        self.client = anthropic.AsyncAnthropic(api_key=self.api_key)
+        self._temperature = 0.7
+        self._max_tokens = None
 
-    async def generate(self, 
-                      prompt: str,
-                      max_tokens: Optional[int] = None,
-                      temperature: float = 0.7,
-                      stop_sequences: Optional[List[str]] = None) -> LLMResponse:
-        response = await self.client.messages.create(
-            model=self.model_name,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[{"role": "user", "content": prompt}]
+    async def generate(self, prompt: str, **kwargs) -> str:
+        """Méthode synchrone pour la compatibilité avec l'interface"""
+        return await self.agenerate(prompt, **kwargs)
+
+    async def stream(self, prompt: str, **kwargs) -> AsyncGenerator[str, None]:
+        """Stream the response from the LLM"""
+        temp = kwargs.get('temperature', self._temperature)
+        max_tok = kwargs.get('max_tokens', self._max_tokens)
+
+        message = await self.client.messages.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temp,
+            max_tokens=max_tok,
+            stream=True
         )
-        
-        return LLMResponse(
-            text=response.content[0].text,
-            tokens_used=response.usage.total_tokens,
-            model_name=self.model_name,
-            provider="anthropic",
-            metadata={"stop_reason": response.stop_reason}
+
+        async for chunk in message:
+            if chunk.content:
+                yield chunk.content[0].text
+
+    async def agenerate(
+        self,
+        prompt: str,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None
+    ) -> str:
+        temp = temperature if temperature is not None else self._temperature
+        max_tok = max_tokens if max_tokens is not None else self._max_tokens
+
+        message = await self.client.messages.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temp,
+            max_tokens=max_tok
         )
 
-    async def stream(self, 
-                    prompt: str,
-                    max_tokens: Optional[int] = None,
-                    temperature: float = 0.7,
-                    stop_sequences: Optional[List[str]] = None):
-        async with self.client.messages.stream(
-            model=self.model_name,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            messages=[{"role": "user", "content": prompt}]
-        ) as stream:
-            async for chunk in stream:
-                if chunk.content:
-                    yield chunk.content
+        return message.content[0].text
 
-    def get_token_count(self, text: str) -> int:
-        # Utiliser l'estimateur de tokens d'Anthropic
-        return self.client.count_tokens(text)
+    def get_config(self) -> Dict[str, Any]:
+        return {
+            "provider": self.provider,
+            "model": self.model,
+            "temperature": self._temperature,
+            "max_tokens": self._max_tokens
+        }

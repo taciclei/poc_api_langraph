@@ -1,49 +1,35 @@
-from typing import Optional, Dict, List
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
+from typing import Optional
 from pydantic import BaseModel
 from ..services.llm_service import LLMService
-from ..llm.interface.base_llm import LLMResponse
 
-router = APIRouter(prefix="/llm", tags=["llm"])
+router = APIRouter()
+llm_service = LLMService()
 
-class GenerateRequest(BaseModel):
+class CompletionRequest(BaseModel):
     prompt: str
-    provider: Optional[str] = None
     max_tokens: Optional[int] = None
-    temperature: float = 0.7
-    use_cache: bool = True
+    temperature: Optional[float] = None
+    stream: Optional[bool] = False
 
-@router.get("/providers", response_model=List[str])
-async def get_available_providers(llm_service: LLMService = Depends()):
-    return llm_service.get_available_providers()
-
-@router.post("/generate", response_model=LLMResponse)
-async def generate_text(
-    request: GenerateRequest,
-    llm_service: LLMService = Depends()
-):
+@router.post("/v1/completions")
+async def create_completion(request: CompletionRequest):
     try:
-        return await llm_service.generate(
-            prompt=request.prompt,
-            provider=request.provider,
-            use_cache=request.use_cache,
-            max_tokens=request.max_tokens,
-            temperature=request.temperature
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/stream")
-async def stream_text(
-    request: GenerateRequest,
-    llm_service: LLMService = Depends()
-):
-    try:
-        return await llm_service.stream(
-            prompt=request.prompt,
-            provider=request.provider,
-            max_tokens=request.max_tokens,
-            temperature=request.temperature
-        )
+        if request.stream:
+            return StreamingResponse(
+                llm_service.stream(
+                    request.prompt,
+                    max_tokens=request.max_tokens,
+                    temperature=request.temperature
+                ),
+                media_type="text/event-stream"
+            )
+        else:
+            return await llm_service.generate(
+                request.prompt,
+                max_tokens=request.max_tokens,
+                temperature=request.temperature
+            )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

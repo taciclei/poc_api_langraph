@@ -1,15 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import health_routes, graph_routes, llm_routes
-from .services.llm_service import LLMService
+from .config import get_settings
+from .routes import cache, llm_routes, graph_routes, health_routes
+from .middleware.metrics import add_metrics_middleware
+
+settings = get_settings()
 
 app = FastAPI(
     title="LangGraph API",
-    description="API for managing and executing language model graphs",
+    description="API pour la gestion de graphes LLM",
     version="1.1.0"
 )
 
-# Configuration CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,23 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialisation des services
-llm_service = LLMService()
+# Metrics
+add_metrics_middleware(app)
 
-# Enregistrement des routes
-app.include_router(health_routes.router)
-app.include_router(graph_routes.router)
-app.include_router(
-    llm_routes.router,
-    dependencies=[Depends(lambda: llm_service)]
-)
-
-@app.on_event("startup")
-async def startup_event():
-    # Initialisation au démarrage
-    pass
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    # Nettoyage à l'arrêt
-    pass
+# Routes
+app.include_router(health_routes.router, tags=["health"])
+app.include_router(cache.router, prefix="/cache", tags=["cache"])
+app.include_router(llm_routes.router, tags=["llm"])
+app.include_router(graph_routes.router, prefix="/graphs", tags=["graphs"])

@@ -1,31 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import AsyncGenerator, Optional, Dict
 from pydantic import BaseModel
 
 class LLMResponse(BaseModel):
     text: str
-    tokens_used: int
-    model_name: str
-    provider: str
-    metadata: Dict = {}
+    usage: Optional[Dict] = None
+    model: Optional[str] = None
 
 class BaseLLM(ABC):
     @abstractmethod
-    async def generate(self, 
-                      prompt: str, 
-                      max_tokens: Optional[int] = None,
-                      temperature: float = 0.7,
-                      stop_sequences: Optional[List[str]] = None) -> LLMResponse:
+    async def generate(self, prompt: str, **kwargs) -> LLMResponse:
         pass
 
     @abstractmethod
-    async def stream(self, 
-                    prompt: str,
-                    max_tokens: Optional[int] = None,
-                    temperature: float = 0.7,
-                    stop_sequences: Optional[List[str]] = None):
-        pass
-
-    @abstractmethod
-    def get_token_count(self, text: str) -> int:
+    async def stream(self, prompt: str, **kwargs) -> AsyncGenerator[str, None]:
         pass
