@@ -1,18 +1,30 @@
-from fastapi import APIRouter, HTTPException
-from typing import List
-from ..models.node import NodeCreate, NodeUpdate
-from ..services.node_service import NodeService
+from fastapi import APIRouter
+from src.api.models.node import Node
+from src.api.services.node_service import NodeService
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
 
-@router.post("/graphs/{graph_id}/nodes", response_model=dict)
-def create_node(graph_id: str, node: NodeCreate):
-    return NodeService.create_node(graph_id, node.dict())
+@router.post("/", status_code=201)
+async def create_node(node: Node):
+    service = NodeService()
+    return await service.create_node(node)
 
-@router.get("/graphs/{graph_id}/nodes", response_model=List[dict])
-def list_nodes(graph_id: str):
-    return NodeService.list_nodes(graph_id)
+@router.get("/{node_id}")
+async def get_node(node_id: str):
+    service = NodeService()
+    return await service.get_node(node_id)
 
-@router.get("/nodes/{node_id}", response_model=dict)
-def get_node(node_id: str):
-    return NodeService.get_node(node_id)
+@router.get("/graph/{graph_id}")
+async def list_nodes(graph_id: str):
+    service = NodeService()
+    return await service.list_nodes(graph_id)
+
+@router.put("/{node_id}")
+async def update_node(node_id: str, node: Node):
+    service = NodeService()
+    return await service.update_node(node_id, node)
+
+@router.delete("/{node_id}")
+async def delete_node(node_id: str):
+    service = NodeService()
+    return await service.delete_node(node_id)
