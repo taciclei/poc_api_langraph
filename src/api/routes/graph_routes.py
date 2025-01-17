@@ -1,51 +1,31 @@
 from fastapi import APIRouter, HTTPException
-from typing import Dict, List
-from pydantic import BaseModel
+from typing import List
 from src.api.services.graph_service import GraphService
+from src.api.models.graph import Graph, GraphResponse
 
 router = APIRouter()
-graph_service = GraphService()
 
-class Edge(BaseModel):
-    source: str
-    target: str
+@router.post("/", response_model=GraphResponse, status_code=201)
+async def create_graph(graph: Graph):
+    service = GraphService()
+    return await service.create_graph(graph)
 
-class GraphCreate(BaseModel):
-    name: str
-    description: str
-    nodes: List[str]
-    edges: List[Edge]
+@router.get("/{graph_id}", response_model=GraphResponse)
+async def get_graph(graph_id: str):
+    service = GraphService()
+    return await service.get_graph(graph_id)
 
-@router.post("/create")
-def create_graph(graph: GraphCreate):
-    """Create a new graph"""
-    try:
-        result = graph_service.create_graph(
-            name=graph.name,
-            description=graph.description,
-            nodes=graph.nodes,
-            edges=[edge.dict() for edge in graph.edges]
-        )
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail={"message": str(e)})
+@router.get("/", response_model=List[GraphResponse])
+async def list_graphs():
+    service = GraphService()
+    return await service.list_graphs()
 
-@router.get("/get/{graph_id}")
-def get_graph(graph_id: str):
-    """Get a graph by ID"""
-    graph = graph_service.get_graph(graph_id)
-    if not graph:
-        raise HTTPException(status_code=404, detail={"message": "Graph not found"})
-    return graph
+@router.put("/{graph_id}", response_model=GraphResponse)
+async def update_graph(graph_id: str, graph: Graph):
+    service = GraphService()
+    return await service.update_graph(graph_id, graph)
 
-@router.delete("/delete/{graph_id}")
-def delete_graph(graph_id: str):
-    """Delete a graph"""
-    if not graph_service.delete_graph(graph_id):
-        raise HTTPException(status_code=404, detail={"message": "Graph not found"})
-    return {"message": "Graph deleted successfully"}
-
-@router.get("/list")
-def list_graphs():
-    """List all graphs"""
-    return graph_service.list_graphs()
+@router.delete("/{graph_id}")
+async def delete_graph(graph_id: str):
+    service = GraphService()
+    return await service.delete_graph(graph_id)

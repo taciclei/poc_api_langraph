@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, HTTPException
 from ..visualization.d3_visualization import D3Visualization
 from ..services.graph_service import GraphService
@@ -39,3 +40,14 @@ async def update_node_position(
 async def get_node_metrics(node_id: str):
     """Récupère les métriques d'un nœud"""
     return await visualizer.get_node_metrics(node_id)
+=======
+from fastapi import APIRouter
+from src.api.visualization.d3_visualization import D3Visualization
+
+router = APIRouter()
+
+@router.get("/graph/{graph_id}")
+async def get_visualization(graph_id: str):
+    visualizer = D3Visualization()
+    return await visualizer.generate_visualization(graph_id)
+>>>>>>> release/1.1.0

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from .base import BaseModel
@@ -34,3 +35,37 @@ class Edge(BaseModel):
     graph = relationship("Graph", back_populates="edges")
     source = relationship("Node", foreign_keys=[source_id], back_populates="outgoing_edges")
     target = relationship("Node", foreign_keys=[target_id], back_populates="incoming_edges")
+=======
+from pydantic import BaseModel
+from typing import List, Optional, Dict, Any
+
+class Node(BaseModel):
+    id: Optional[str] = None
+    name: str
+    type: str
+    graph_id: Optional[str] = None
+    properties: Optional[Dict[str, Any]] = {}
+
+class Edge(BaseModel):
+    id: Optional[str] = None
+    source_id: str
+    target_id: str
+    graph_id: Optional[str] = None
+    properties: Optional[Dict[str, Any]] = {}
+
+class Graph(BaseModel):
+    id: Optional[str] = None
+    name: str
+    description: str
+    nodes: List[Node] = []
+    edges: List[Edge] = []
+    properties: Optional[Dict[str, Any]] = {}
+
+class GraphResponse(BaseModel):
+    id: str
+    name: str
+    description: str
+    nodes: List[Node]
+    edges: List[Edge]
+    properties: Dict[str, Any] = {}
+>>>>>>> release/1.1.0

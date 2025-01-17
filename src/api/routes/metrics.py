@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from ..metrics.prometheus import metrics
@@ -47,4 +48,25 @@ async def get_metrics_summary():
                 for endpoint, method, status in metrics.api_requests._metrics
             )
         }
+=======
+from fastapi import APIRouter
+from typing import Dict, List, Any
+
+router = APIRouter()
+
+@router.get("/")
+async def get_metrics() -> Dict[str, Any]:
+    return {
+        "requests_total": 100,
+        "request_duration_seconds": 0.5,
+        "active_graphs": 10
+    }
+
+@router.get("/graphs")
+async def get_graph_metrics() -> Dict[str, Any]:
+    return {
+        "total_graphs": 10,
+        "active_executions": 5,
+        "average_execution_time": 2.5
+>>>>>>> release/1.1.0
     }

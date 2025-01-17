@@ -6,9 +6,6 @@ name = "poc_api_langraph"
 platforms = ["osx-arm64"]
 version = "0.1.0"
 
-[tasks]
-start = "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
-
 [dependencies]
 max = ">=24.6.0,<25"
 uvicorn = "*"
@@ -38,4 +35,3 @@ psycopg2-binary = ">=2.9.9,<3"
 asyncpg = ">=0.30.0,<0.31"
 
 [pypi-dependencies]
-mistralai = ">=0.0.12"
