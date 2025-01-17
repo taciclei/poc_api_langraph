@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.5",
     "@mui/lab": "^5.0.0-alpha.161",
     "@mui/material": "^5.15.5",
@@ -28,7 +29,7 @@
     "react-resizable": "^3.0.5",
     "react-router-dom": "^6.21.3",
     "react-use": "^17.4.3",
-    "@monaco-editor/react": "^4.6.0",
+    "reactflow": "^11.11.4",
     "split.js": "^1.6.5"
   },
   "devDependencies": {
