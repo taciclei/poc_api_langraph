@@ -1,46 +1,23 @@
 # Changelog
 
-## [1.0.0] - 2025-01-16
-
-### Added
-- Moteur d'exécution LangGraph
-- Système de nœuds modulaire
-- API RESTful complète
-- Documentation avec diagrammes
-- Tests unitaires et d'intégration
-- Système de persistance TinyDB
-
-### Changed
-- N/A (première version)
-
-### Deprecated
-- N/A
-
-### Removed
-- N/A
-
-### Fixed
-- N/A
-
-### Security
-- Gestion sécurisée des clés API
-
 ## [1.1.0] - 2025-01-17
 
-### Ajouté
-- Support complet des graphes avec nœuds et arêtes
-- Système de migration avec Alembic
-- Cache intelligent pour les requêtes fréquentes
-- Jeu de données de test
+### Added
+- Support multi-providers LLM (OpenAI, Mistral, Hugging Face)
+- Complete graph management system
+- Advanced validation system
+- Monitoring system
+- Intelligent caching
+- RESTful API documentation
+- New routes for models, prompts, chains, tools, workflows, and agents
 
-### Modifié
-- Optimisation du schéma de base de données
-- Amélioration de la gestion des relations entre nœuds
+### Changed
+- Updated project structure
+- Improved dependency management
+- Enhanced configuration system
+- Upgraded test suite
 
-### Corrigé
-- Problèmes de performance avec les requêtes complexes
-- Gestion des erreurs dans les transactions
-
-### Sécurité
-- Validation des entrées renforcée
-- Protection contre les injections SQL
+### Fixed
+- Main application structure
+- Configuration conflicts
+- Route organization
