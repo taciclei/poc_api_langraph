@@ -1,38 +1,44 @@
-from typing import Optional, Any
-from datetime import timedelta
-from ..cache.storage.tinydb_cache import TinyDBCache
-from ..cache.strategies.cache_strategy import CacheManager, CacheStrategy
+from typing import Any, Dict, Optional
+from src.api.models.cache import CacheItem, CacheStats
 
 class CacheService:
     def __init__(self):
-        self.cache_backend = TinyDBCache("data/cache.json")
-        self.cache_manager = CacheManager(self.cache_backend)
+        self._cache: Dict[str, Any] = {}
+        self._stats = CacheStats()
 
-    async def cache_llm_response(self, 
-                               prompt: str, 
-                               response: str, 
-                               ttl: Optional[timedelta] = None) -> None:
-        """Cache une réponse LLM"""
-        key = f"llm_response:{hash(prompt)}"
-        self.cache_backend.set(key, response, ttl)
+    async def get(self, key: str) -> Optional[Any]:
+        """Récupère une valeur du cache"""
+        value = self._cache.get(key)
+        if value is not None:
+            self._stats.hits += 1
+            return value
+        self._stats.misses += 1
+        return None
 
-    async def get_cached_llm_response(self, prompt: str) -> Optional[str]:
-        """Récupère une réponse LLM cachée"""
-        key = f"llm_response:{hash(prompt)}"
-        return self.cache_backend.get(key)
+    async def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+        """Stocke une valeur dans le cache"""
+        self._cache[key] = value
+        self._stats.keys = len(self._cache)
+        return True
 
-    async def cache_graph_execution(self, 
-                                  graph_id: str, 
-                                  input_data: dict, 
-                                  result: Any, 
-                                  ttl: Optional[timedelta] = None) -> None:
-        """Cache le résultat d'exécution d'un graphe"""
-        key = f"graph_execution:{graph_id}:{hash(str(input_data))}"
-        self.cache_backend.set(key, result, ttl)
+    async def delete(self, key: str) -> bool:
+        """Supprime une valeur du cache"""
+        if key in self._cache:
+            del self._cache[key]
+            self._stats.keys = len(self._cache)
+            return True
+        return False
 
-    async def get_cached_graph_execution(self, 
-                                       graph_id: str, 
-                                       input_data: dict) -> Optional[Any]:
-        """Récupère un résultat d'exécution de graphe caché"""
-        key = f"graph_execution:{graph_id}:{hash(str(input_data))}"
-        return self.cache_backend.get(key)
+    async def clear(self) -> bool:
+        """Vide le cache"""
+        self._cache.clear()
+        self._stats = CacheStats()
+        return True
+
+    async def get_stats(self) -> CacheStats:
+        """Récupère les statistiques du cache"""
+        return self._stats
+
+    async def get_all(self) -> Dict[str, Any]:
+        """Récupère toutes les valeurs du cache"""
+        return self._cache

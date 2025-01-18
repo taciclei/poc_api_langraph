@@ -1,0 +1,55 @@
+{
+  "name": "Data Processing Pipeline",
+  "description": "Pipeline de traitement de données avec extraction, transformation et chargement",
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "input",
+      "label": "Data Input",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "type": "json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "data": { "type": "array" }
+          }
+        }
+      }
+    },
+    {
+      "id": "node-2",
+      "type": "transform",
+      "label": "Data Transform",
+      "position": { "x": 400, "y": 100 },
+      "data": {
+        "operation": "map",
+        "function": "item => ({ ...item, processed: true })"
+      }
+    },
+    {
+      "id": "node-3",
+      "type": "output",
+      "label": "Data Output",
+      "position": { "x": 700, "y": 100 },
+      "data": {
+        "format": "json",
+        "compression": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-1",
+      "target": "node-2",
+      "type": "default"
+    },
+    {
+      "id": "edge-2",
+      "source": "node-2",
+      "target": "node-3",
+      "type": "default"
+    }
+  ]
+}

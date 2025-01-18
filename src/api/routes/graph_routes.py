@@ -1,31 +1,43 @@
 from fastapi import APIRouter, HTTPException
-from typing import List
-from src.api.services.graph_service import GraphService
-from src.api.models.graph import Graph, GraphResponse
+from typing import Dict, Any, List
+from ..services.graph_service import graph_service
+from ..models.graph import Graph, GraphCreate, GraphUpdate
 
 router = APIRouter()
 
-@router.post("/", response_model=GraphResponse, status_code=201)
-async def create_graph(graph: Graph):
-    service = GraphService()
-    return await service.create_graph(graph)
+@router.post("/graphs", response_model=Graph)
+async def create_graph(graph_data: GraphCreate):
+    """Crée un nouveau graphe"""
+    return await graph_service.create_graph(graph_data.dict())
 
-@router.get("/{graph_id}", response_model=GraphResponse)
+@router.get("/graphs/{graph_id}", response_model=Graph)
 async def get_graph(graph_id: str):
-    service = GraphService()
-    return await service.get_graph(graph_id)
+    """Récupère un graphe par son ID"""
+    graph = await graph_service.get_graph(graph_id)
+    if not graph:
+        raise HTTPException(status_code=404, detail="Graph not found")
+    return graph
 
-@router.get("/", response_model=List[GraphResponse])
-async def list_graphs():
-    service = GraphService()
-    return await service.list_graphs()
+@router.get("/graphs", response_model=List[Graph])
+async def list_graphs(skip: int = 0, limit: int = 10):
+    """Liste tous les graphes avec pagination"""
+    return await graph_service.list_graphs(skip=skip, limit=limit)
 
-@router.put("/{graph_id}", response_model=GraphResponse)
-async def update_graph(graph_id: str, graph: Graph):
-    service = GraphService()
-    return await service.update_graph(graph_id, graph)
+@router.get("/graphs/{graph_id}/export")
+async def export_graph(graph_id: str):
+    """Exporte un graphe"""
+    try:
+        graph = await graph_service.get_graph(graph_id)
+        if not graph:
+            raise HTTPException(status_code=404, detail="Graph not found")
+        return graph.dict()
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
-@router.delete("/{graph_id}")
-async def delete_graph(graph_id: str):
-    service = GraphService()
-    return await service.delete_graph(graph_id)
+@router.post("/graphs/import")
+async def import_graph(graph_data: Dict[str, Any]):
+    """Importe un graphe"""
+    try:
+        return await graph_service.create_graph(graph_data)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -1,0 +1,64 @@
+{
+  "name": "Customer Onboarding Assistant",
+  "description": "Graph for handling customer onboarding questions and documentation",
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "prompt",
+      "label": "Query Classifier",
+      "position": { "x": 100, "y": 100 },
+      "config": {
+        "template": "Classify the following customer query into one of these categories: ACCOUNT_SETUP, DOCUMENTATION, TECHNICAL_ISSUE, BILLING, OTHER\n\nQuery: {input}\n\nCategory:"
+      }
+    },
+    {
+      "id": "node-2",
+      "type": "llm",
+      "label": "Classifier LLM",
+      "position": { "x": 400, "y": 100 },
+      "config": {
+        "model": "gpt-3.5-turbo",
+        "temperature": 0.3
+      }
+    },
+    {
+      "id": "node-3",
+      "type": "router",
+      "label": "Query Router",
+      "position": { "x": 700, "y": 100 },
+      "config": {
+        "routes": {
+          "ACCOUNT_SETUP": "node-4",
+          "DOCUMENTATION": "node-5",
+          "TECHNICAL_ISSUE": "node-6",
+          "BILLING": "node-7",
+          "OTHER": "node-8"
+        }
+      }
+    },
+    {
+      "id": "node-4",
+      "type": "agent",
+      "label": "Account Setup Agent",
+      "position": { "x": 1000, "y": 0 },
+      "config": {
+        "tools": ["account_creator", "permission_manager"],
+        "template": "Help the customer with account setup: {input}"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-1",
+      "target": "node-2",
+      "label": "query"
+    },
+    {
+      "id": "edge-2",
+      "source": "node-2",
+      "target": "node-3",
+      "label": "category"
+    }
+  ]
+}
