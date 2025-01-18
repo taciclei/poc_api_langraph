@@ -1,29 +1,43 @@
-import { Box, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Dashboard, AccountTree, PlayArrow } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton,
+} from '@mui/material';
+import {
+  Dashboard as DashboardIcon,
+  AccountTree as GraphIcon,
+  Settings as SettingsIcon,
+} from '@mui/icons-material';
 
-export const Navigation = () => {
-  const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/' },
-    { text: 'Graphs', icon: <AccountTree />, path: '/graph' },
-    { text: 'Executions', icon: <PlayArrow />, path: '/executions' },
-  ];
+const navigationItems = [
+  { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+  { text: 'Graphs', icon: <GraphIcon />, path: '/graphs' },
+  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+];
+
+const Navigation: React.FC = () => {
+  const location = useLocation();
 
   return (
-    <Box sx={{ width: 240 }}>
-      <List>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            component={Link}
+    <List>
+      {navigationItems.map((item) => (
+        <ListItem key={item.text} disablePadding>
+          <ListItemButton
+            component={RouterLink}
             to={item.path}
-            key={item.text}
+            selected={location.pathname === item.path}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
   );
 };
+
+export default Navigation;

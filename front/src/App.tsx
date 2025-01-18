@@ -1,37 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
+import { theme } from './theme';
 import DashboardLayout from './components/layout/DashboardLayout';
-import DashboardPage from './pages/dashboard/DashboardPage';
-import { GraphEditor } from './components/GraphEditor';
+import AppRoutes from './routes';
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-  },
-});
-
-function App() {
+const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <DashboardLayout>
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/graph" element={<GraphEditor />} />
-            <Route path="/graph/:id" element={<GraphEditor />} />
-          </Routes>
+          <AppRoutes />
         </DashboardLayout>
-      </Router>
-    </ThemeProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

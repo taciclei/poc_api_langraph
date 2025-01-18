@@ -1,0 +1,49 @@
+{
+  "name": "Sentiment Analysis",
+  "description": "Analyse de sentiment multi-étapes avec prétraitement et classification",
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "prompt",
+      "label": "Text Preprocessor",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "template": "Clean and prepare this text for sentiment analysis: {input}"
+      }
+    },
+    {
+      "id": "node-2",
+      "type": "llm",
+      "label": "Sentiment Analyzer",
+      "position": { "x": 400, "y": 100 },
+      "data": {
+        "model": "gpt-3.5-turbo",
+        "temperature": 0.3,
+        "prompt": "Analyze the sentiment of this text and classify it as POSITIVE, NEGATIVE, or NEUTRAL: {input}"
+      }
+    },
+    {
+      "id": "node-3",
+      "type": "function",
+      "label": "Result Formatter",
+      "position": { "x": 700, "y": 100 },
+      "data": {
+        "function": "result => ({ sentiment: result.trim(), confidence: 0.95 })"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-1",
+      "target": "node-2",
+      "type": "default"
+    },
+    {
+      "id": "edge-2",
+      "source": "node-2",
+      "target": "node-3",
+      "type": "default"
+    }
+  ]
+}
